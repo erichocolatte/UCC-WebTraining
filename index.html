@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./responsive.css">
     <script src="https://kit.fontawesome.com/4b6e49b71c.js" crossorigin="anonymous"></script>
 </head>
 
@@ -14,17 +15,23 @@
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-content">
                 <div class="profile-section">
-                    <img class="profile-image" src="./assests/354912804_582013974090382_1597928518153411456_n.jpg" alt="Profile image">
+                    <img class="profile-image" src="./assests/354912804_582013974090382_1597928518153411456_n.jpg"
+                        alt="Profile image">
                     <h2 class="profile-name">Hello I'm</h2>
                     <h2 class="profile-name" id="profileName">Nguyễn Văn A</h2>
                     <p class="profile-title">Frontend Developer</p>
+                    <p class="profile-title">
+                        <i class="fa-solid fa-circle-check profile-work"></i>
+                        Avaiable for work
+                    </p>
+
                 </div>
 
                 <div class="sidebar-info">
                     <div class="info-item">
                         <div class="info-content">
                             <label>Năm sinh:</label>
-                            <p>1995</p>
+                            <p>2006</p>
                         </div>
                     </div>
                     <div class="info-item">
@@ -67,7 +74,290 @@
             </div>
         </aside>
 
+        <div class="navigate">
+            <div class="dropdown-toogle">Quick navigate</div>
+            <ul class="dropdown-menu">
+                <li>
+                    <a href="#about">About me</a>
+                </li>
+                <li>
+                    <a href="#skill">Skill</a>
+                </li>
+                <li>
+                    <a href="#experience">Experience</a>
+                </li>
+                <li>
+                    <a href="#project">Project</a>
+                </li>
+                <li>
+                    <a href="#edu">Education</a>
+                </li>
+                <li>
+                    <a href="#language">Language skill</a>
+                </li>
+                <li>
+                    <a href="#contact">Send me message</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="mobile-profile">
+            <div class="mobile-profile-header">
+                <img class="mobile-profile-avatar" src="./assests/354912804_582013974090382_1597928518153411456_n.jpg">
+                <div class="mobile-profile-detail">
+                    <div class="mobile-profile-name">Hello I'm Nguyen Van A</div>
+                    <div class="mobile-profile-title">Fullstack Developer</div>
+                    <div class="mobile-profile-title">
+                        <i class="fa-solid fa-circle-check profile-work"></i>
+                        Avaiable for work
+                    </div>
+                    <div class="mobile-profile-title">
+                        <i class="fa-solid fa-location-dot"></i>
+                        Ha Noi, Viet Nam
+                    </div>
+                </div>
+
+                <ul class="mobile-profile-social">
+                    <li href="#" class="social-link">
+                        <i class="fa-brands fa-facebook"></i>
+                    </li>
+                    <li href="#" class="social-link">
+                        <i class="fa-brands fa-linkedin"></i>
+                    </li>
+                    <li href="#" class="social-link">
+                        <i class="fa-brands fa-github"></i>
+                    </li>
+                </ul>
+
+            </div>
+            <div class="mobile-profile-content">
+                <div class="mobile-profile-item">
+                    <i class="fa-solid fa-phone"></i> : 123 456 789
+                </div>
+                <div class="mobile-profile-item">
+                    <i class="fa-solid fa-envelope"></i> : nguyenvana@gmail.com
+                </div>
+            </div>
+
+        </div>
+
         <main class="main-content">
+
+            <section class="about" id="about">
+                <div class="container">
+                    <h2>About me</h2>
+                    <p></p>
+                </div>
+            </section>
+
+            <section class="skill" id="skill">
+                <div class="container">
+                    <h2>Skills</h2>
+                    <div class="skill-list">
+                        <div class="skill-item">
+                            <span>ReactJS</span>
+                        </div>
+                        <div class="skill-item">
+                            <span>Java Spring Boot/Security/JPA
+                            </span>
+                        </div>
+                        <div class="skill-item">
+                            <span>UI/UX design</span>
+                        </div>
+                        <div class="skill-item">
+                            <span>Cloudbase AWS/GGC/Azure</span>
+                        </div>
+                        <div class="skill-item">
+                            <span>SQL/noSQL</span>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <section class="experience" id="experience">
+                <div class="container">
+                    <h2>Experience</h2>
+                    <div class="experience-list">
+                        <div class="experience-item">
+                            <img class="experience-icon"
+                                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSpWuov1FaVQCLOUTG42lHCWtzV2pgDbLScQA&s">
+                            <div class="experience-content">
+                                <div class="experience-header">
+                                    <span>Nashtech</span>
+                                    <div class="experience-period">
+                                        2026
+                                    </div>
+
+                                </div>
+                                <div class="experience-title">HR</div>
+                                <ul class="experience-detail">
+                                    <li>Cong ty anh Tan</li>
+                                    <li>Co Talent program</li>
+                                </ul>
+                            </div>
+
+                        </div>
+
+                        <div class="experience-item">
+                            <img class="experience-icon"
+                                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRcS-HdfgUSCDmV_LNqOxasca8KcceWStGP_A&s">
+                            <div class="experience-content">
+                                <div class="experience-header">
+                                    <span>Shopee</span>
+                                    <div class="experience-period">
+                                        2026
+                                    </div>
+
+                                </div>
+                                <div class="experience-title">HR</div>
+                                <ul class="experience-detail">
+                                    <li>Cong ty anh Tan</li>
+                                    <li>Co Talent program</li>
+                                </ul>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                </div>
+            </section>
+
+            <section class="project" id="project">
+                <div class="container">
+                    <h2>Project</h2>
+                    <div class="project-list">
+                        <div class="project-item">
+                            <img class="project-preview"
+                                src="./assests/354912804_582013974090382_1597928518153411456_n.jpg">
+                            <div class="project-name">UCC WEB TRANING</div>
+                        </div>
+
+                        <div class="project-item">
+                            <img class="project-preview"
+                                src="./assests/354912804_582013974090382_1597928518153411456_n.jpg">
+                            <div class="project-name">UCC WEB TRANING</div>
+                        </div>
+
+                        <div class="project-item">
+                            <img class="project-preview"
+                                src="./assests/354912804_582013974090382_1597928518153411456_n.jpg">
+                            <div class="project-name">UCC WEB TRANING</div>
+                        </div>
+
+                        <div class="project-item">
+                            <img class="project-preview"
+                                src="./assests/354912804_582013974090382_1597928518153411456_n.jpg">
+                            <div class="project-name">UCC WEB TRANING</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="edu" id="edu">
+                <div class="container">
+                    <h2>Education</h2>
+                    <div class="edu-list">
+                        <div class="edu-item">
+                            <img class="edu-icon"
+                                src="https://www.univ-amu.fr/system/files/styles/illustration_contenu_redactionnel/private/2022-03/DRI-Logo%20USTH%20Chine.png?itok=Ddt3_B4p">
+                            <div class="edu-content">
+                                <div class="edu-header">
+                                    <span>USTH</span>
+                                    <div class="edu-period">
+                                        2024-2027
+                                    </div>
+                                </div>
+                                <div class="edu-degree">Bachelor</div>
+                                <div class="edu-detail"></div>
+                            </div>
+                        </div>
+
+                        <div class="edu-item">
+                            <img class="edu-icon"
+                                src="https://www.univ-amu.fr/system/files/styles/illustration_contenu_redactionnel/private/2022-03/DRI-Logo%20USTH%20Chine.png?itok=Ddt3_B4p">
+                            <div class="edu-content">
+                                <div class="edu-header">
+                                    <span>USTH</span>
+                                    <div class="edu-period">
+                                        2024-2027
+                                    </div>
+                                </div>
+                                <div class="edu-degree">Bachelor</div>
+                                <div class="edu-detail"></div>
+                            </div>
+                        </div>
+
+                        <div class="edu-item">
+                            <img class="edu-icon"
+                                src="https://www.univ-amu.fr/system/files/styles/illustration_contenu_redactionnel/private/2022-03/DRI-Logo%20USTH%20Chine.png?itok=Ddt3_B4p">
+                            <div class="edu-content">
+                                <div class="edu-header">
+                                    <span>USTH</span>
+                                    <div class="edu-period">
+                                        2024-2027
+                                    </div>
+                                </div>
+                                <div class="edu-degree">Bachelor</div>
+                                <div class="edu-detail"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="language" id="language">
+                <div class="container">
+                    <h2>Language</h2>
+                    <div class="lang-list">
+                        <div class="lang-item">
+                            <span>English</span>
+                            <div>-</div>
+                            <div class="lang-detail">Sybau</div>
+                        </div>
+
+                        <div class="lang-item">
+                            <span>Vietnamese</span>
+                            <div>-</div>
+                            <div class="lang-detail">Ban nhu gio</div>
+                        </div>
+
+                        <div class="lang-item">
+                            <span>France</span>
+                            <div>-</div>
+                            <div class="lang-detail">Vouz-parlez francais ?</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="contact" id="contact">
+                <div class="container">
+                    <h2>Let's connect</h2>
+                    <form class="contact-form">
+
+                        <div class="form-group">
+                            <label for="name">Full Name</label>
+                            <input type="text" id="name" placeholder="Your name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" placeholder="Your email" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea id="message" rows="4" placeholder="Your message"></textarea>
+                        </div>
+
+                        <button type="submit">Send</button>
+                    </form>
+
+                </div>
+            </section>
+
 
         </main>
     </div>

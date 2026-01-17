@@ -1,0 +1,58 @@
+/* On Table */
+@media (max-width: 1024px) {
+    .sidebar {
+        width: 300px;
+    }
+
+    .main-content {
+        margin-left: 300px;
+    }
+}
+
+.mobile-profile {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        display: none;
+    }
+
+    .main-content {
+        margin-left: 0;
+        /* margin-top: 60px; */
+    }
+
+    .navigate {
+        display: none;
+    }
+
+    .mobile-profile {
+        margin: 25px;
+    }
+
+    .mobile-profile-header {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .mobile-profile-name {
+        font-weight: 900;
+    }
+
+    .mobile-profile-title {
+        color: #364153;
+
+    }
+
+    .mobile-profile-avatar {
+        border-radius: 2em;
+        width: 30%;
+        height: auto;
+        margin-right: 10px;
+    }
+
+    .mobile-profile-social {
+        list-style-type: none;
+    }
+}

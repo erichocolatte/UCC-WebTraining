@@ -4,6 +4,10 @@
     box-sizing: border-box;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     font-family: 'Arial', sans-serif;
     line-height: 1.6;
@@ -19,7 +23,8 @@ body {
     top: 0;
     height: 100vh;
     overflow-y: auto;
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    /* box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1); */
+    border-right: #E5E7EB solid 1px;
 }
 
 .sidebar-content {
@@ -36,7 +41,11 @@ body {
 .profile-title {
     margin-top: 1em;
     margin-bottom: 1em;
-    color: #B4B9C0;
+    color: #364153;
+}
+
+.profile-work {
+    color :#00C950;
 }
 
 .info-item {
@@ -58,8 +67,262 @@ body {
 .info-content label {
     display: block;
     margin-bottom: 5px;
+    font-weight: 900;
 }
 
 .info-content p {
     font-size: 1rem;
+    color: #364153;
 }
+
+.main-content {
+    flex: 1;
+    margin-left: 350px;
+    padding: 10px 30px;
+}
+
+.container h2 {
+    margin-bottom: 25px;
+}
+
+.container {
+    margin-bottom: 25px;
+}
+
+.skill-list {
+    display: flex;
+    gap : 0.5em;
+    flex-wrap: wrap;
+}
+
+.skill-list > .skill-item:hover {
+    background-color: #737270;
+}
+
+.skill-item {
+    background-color: #F3F4F6;
+    color: #364153;
+    padding-inline: 2em;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-radius: 10px;
+    font-weight: 300;
+    cursor: pointer;
+}
+
+.experience-item {
+    border: #E5E7EB solid 1px;
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.experience-content {
+    flex : 1;
+    margin-left: 25px;
+}
+
+.experience-icon {
+    border-radius: 2em;
+    width: 100px;
+    max-width: 400px;
+    height: auto;
+}
+
+.experience-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.experience-period {
+    color: #364153;
+}
+
+.experience-header span {
+    font-weight: 900;
+}
+
+.experience-title {
+    font-weight: 300;
+}
+
+.experience-detail {
+    padding: 10px;
+    border-top: #E5E7EB solid 1px;
+    margin-top: 10px;
+}
+
+.project-list {
+    border: #E5E7EB solid 1px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #F9FAFB;
+    display: flex;
+    overflow: hidden;
+    overflow-x:  scroll;
+
+}
+
+.project-item {
+    margin-inline: 10px;
+    text-align: center;
+}
+
+.project-name {
+    font-weight: 900;
+}
+
+.project-preview {
+    border-radius: 2em;
+    width: 200px;
+    max-width: 400px;
+    height: auto;
+}
+
+.edu-item {
+    display: flex;
+    border-bottom: #E5E7EB solid 1px;
+}
+
+.edu-content {
+    flex : 1;
+    margin-left: 25px;
+}
+
+.edu-icon {
+    border-radius: 2em;
+    width: 100px;
+    max-width: 400px;
+    height: auto;
+}
+
+.edu-header {
+    /* display: flex; */
+    /* justify-content: space-between; */
+}
+
+.edu-header span {
+    font-weight: 900;
+}
+
+.edu-period {
+    color: #364153;
+    float: right;
+}
+
+.lang-item {
+    display: flex;
+}
+
+.lang-item div {
+    margin-inline: 10px;
+}
+
+.lang-item span {
+    font-weight: 900;
+}
+
+.lang-detail {
+    color: #364153;
+}
+
+.contact-form {
+    /* padding: 10px; */
+    border-radius: 10px;
+}
+
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 900;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #E5E7EB;
+    border-radius: 6px;
+    outline: none;
+    font-size: 14px;
+}
+
+input:focus, textarea:focus {
+    border-color: black;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    background: #E5E7EB;
+    color: black;
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: black;
+    color: white;
+}
+
+/* Navigate */
+.navigate {
+    position: fixed;
+    top: 20px;
+    right: 30px;
+    z-index: 1000;
+    cursor: pointer;
+    background: rgba(249, 250, 251, 0.75);
+    padding: 10px;
+    border-radius: 10px;
+    font-size: small;
+    opacity: 900;
+
+}
+
+.dropdown-menu {
+    display: none;
+    list-style-type: none;
+    background-color: #F9FAFB;
+    width: 200px;
+    border-radius: 10px;
+
+    position: absolute;
+    top: 100%;
+    right: 0; 
+    left: auto;  
+
+    width: 200px;
+
+}
+
+.navigate:hover .dropdown-menu {
+    display: block;
+}
+
+.dropdown-menu > li {
+    padding: 8px 10px;
+}
+
+.dropdown-menu > li:hover {
+    background-color: #737270;
+    border-radius: 10px;
+}
+
+.dropdown-menu > li > a {
+    text-decoration: none;
+    color: #364153;
+    display: block;
+}
+
+.dropdown-menu > li > a:hover {
+    color: white;
+}
+
