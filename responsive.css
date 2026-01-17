@@ -28,6 +28,7 @@
     }
 
     .mobile-profile {
+        display: block;
         margin: 25px;
     }
 
