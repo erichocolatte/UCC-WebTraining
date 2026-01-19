@@ -45,7 +45,7 @@ body {
 }
 
 .profile-work {
-    color :#00C950;
+    color: #00C950;
 }
 
 .info-item {
@@ -91,11 +91,11 @@ body {
 
 .skill-list {
     display: flex;
-    gap : 0.5em;
+    gap: 0.5em;
     flex-wrap: wrap;
 }
 
-.skill-list > .skill-item:hover {
+.skill-list>.skill-item:hover {
     background-color: #737270;
 }
 
@@ -119,7 +119,7 @@ body {
 }
 
 .experience-content {
-    flex : 1;
+    flex: 1;
     margin-left: 25px;
 }
 
@@ -160,7 +160,7 @@ body {
     background-color: #F9FAFB;
     display: flex;
     overflow: hidden;
-    overflow-x:  scroll;
+    overflow-x: scroll;
 
 }
 
@@ -186,7 +186,7 @@ body {
 }
 
 .edu-content {
-    flex : 1;
+    flex: 1;
     margin-left: 25px;
 }
 
@@ -243,7 +243,8 @@ label {
     font-weight: 900;
 }
 
-input, textarea {
+input,
+textarea {
     width: 100%;
     padding: 10px 12px;
     border: 1px solid #E5E7EB;
@@ -252,7 +253,8 @@ input, textarea {
     font-size: 14px;
 }
 
-input:focus, textarea:focus {
+input:focus,
+textarea:focus {
     border-color: black;
 }
 
@@ -296,8 +298,8 @@ button:hover {
 
     position: absolute;
     top: 100%;
-    right: 0; 
-    left: auto;  
+    right: 0;
+    left: auto;
 
     width: 200px;
 
@@ -307,22 +309,74 @@ button:hover {
     display: block;
 }
 
-.dropdown-menu > li {
+.dropdown-menu>li {
     padding: 8px 10px;
 }
 
-.dropdown-menu > li:hover {
+.dropdown-menu>li:hover {
     background-color: #737270;
     border-radius: 10px;
 }
 
-.dropdown-menu > li > a {
+.dropdown-menu>li>a {
     text-decoration: none;
     color: #364153;
     display: block;
 }
 
-.dropdown-menu > li > a:hover {
+.dropdown-menu>li>a:hover {
     color: white;
 }
 
+/* Modal */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    max-width: 500px;
+    max-height: 90vh;
+    width: 90%;
+    position: relative;
+    animation: scaleIn 0.25s ease;
+    overflow: hidden;
+    overflow-y: scroll;
+}
+
+.modal-close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+    width: min-content;
+    display: fixed;
+}
+
+.modal-images {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.modal-images img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 10px;
+}

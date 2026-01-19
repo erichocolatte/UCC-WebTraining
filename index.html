@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="./style.css">
     <link rel="stylesheet" href="./responsive.css">
     <script src="https://kit.fontawesome.com/4b6e49b71c.js" crossorigin="anonymous"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.js"></script> -->
+    <script src="./app.js" type="module"></script>
 </head>
 
 <body>
@@ -227,30 +229,14 @@
             <section class="project" id="project">
                 <div class="container">
                     <h2>Project</h2>
-                    <div class="project-list">
-                        <div class="project-item">
+                    <div class="project-list" id="project-list">
+                        <!-- <div class="project-item">
                             <img class="project-preview"
                                 src="./assests/354912804_582013974090382_1597928518153411456_n.jpg">
                             <div class="project-name">UCC WEB TRANING</div>
-                        </div>
+                        </div> -->
 
-                        <div class="project-item">
-                            <img class="project-preview"
-                                src="./assests/354912804_582013974090382_1597928518153411456_n.jpg">
-                            <div class="project-name">UCC WEB TRANING</div>
-                        </div>
 
-                        <div class="project-item">
-                            <img class="project-preview"
-                                src="./assests/354912804_582013974090382_1597928518153411456_n.jpg">
-                            <div class="project-name">UCC WEB TRANING</div>
-                        </div>
-
-                        <div class="project-item">
-                            <img class="project-preview"
-                                src="./assests/354912804_582013974090382_1597928518153411456_n.jpg">
-                            <div class="project-name">UCC WEB TRANING</div>
-                        </div>
                     </div>
                 </div>
             </section>
@@ -357,10 +343,23 @@
 
                 </div>
             </section>
-
-
+            
         </main>
     </div>
+
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal">
+            <button class="modal-close" id="modal-close">&times;</button>
+
+            <h2 id="modal-title"></h2>
+            <p id="modal-period"></p>
+
+            <div class="modal-images" id="modal-images"></div>
+
+            <div id="modal-desc"></div>
+        </div>
+    </div>
+
 
 </body>
 
