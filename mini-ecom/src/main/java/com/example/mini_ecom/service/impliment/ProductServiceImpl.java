@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.example.mini_ecom.model.Categorie;
 import com.example.mini_ecom.model.Product;
 import com.example.mini_ecom.model.ProductAssest;
 import com.example.mini_ecom.repository.CategorieRepository;
@@ -49,15 +50,17 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product handleUpdateProduct(Long id, Product updateProduct) {
-        if (updateProduct.getCategorie().getId() != null) {
-            if (!this.categorieRepository.findById(updateProduct.getCategorie().getId()).isPresent()) {
-                throw new NoSuchElementException("Categorie not found");
-            }
-
-        }
-
         Product currentProduct = this.productRepository.findById(id).orElseThrow(() -> 
         new NoSuchElementException("Product not found"));
+
+        if (updateProduct.getCategorie() != null) {
+            if (updateProduct.getCategorie().getId() != null) {
+                this.categorieRepository.findById(updateProduct.getCategorie().getId()).orElseThrow(() -> 
+                new NoSuchElementException("Categorie not found"));
+
+                currentProduct.getCategorie().setId(updateProduct.getCategorie().getId());
+            }
+        }
 
         currentProduct.getCategorie().setId(updateProduct.getCategorie().getId());
 
@@ -109,4 +112,17 @@ public class ProductServiceImpl implements ProductService {
     // public void handleDeleteProductCategorie(Categorie currentCategorie) {
     //     this.productRepository.deleteByCategorie(currentCategorie);
     // }
+
+    @Override
+    public Page<Product> handleGetAllProductsByCategory(Long categorieId, Pageable productPageable) {
+        if (categorieId == null) {
+            throw new IllegalArgumentException("Categorie id is null");
+        }
+
+        Categorie currentCategorie = this.categorieRepository.findById(categorieId).orElseThrow(() -> 
+            new NoSuchElementException("Categorie not found")
+        );
+
+        return this.productRepository.findByCategorieAndDeletedAtIsNull(currentCategorie, productPageable);
+    }
 }

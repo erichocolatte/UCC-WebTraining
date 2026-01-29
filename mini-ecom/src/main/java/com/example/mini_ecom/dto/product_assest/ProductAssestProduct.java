@@ -1,4 +1,4 @@
-package com.example.mini_ecom.dto.product;
+package com.example.mini_ecom.dto.product_assest;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ProductCategorieDTO {
-    // private String name;
+public class ProductAssestProduct {
     private Long id;
 }

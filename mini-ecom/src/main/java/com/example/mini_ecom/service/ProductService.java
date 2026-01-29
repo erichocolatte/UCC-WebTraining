@@ -16,6 +16,7 @@ public interface ProductService {
     public void handleDeleteProduct(Long id);   
 
     public Page<Product> handleGetAllProducts(Pageable productPageable);
+    public Page<Product> handleGetAllProductsByCategory(Long categorieId, Pageable productPageable);
     // public void handleDeleteProductCategorie(Categorie currentCategorie);
     
 }

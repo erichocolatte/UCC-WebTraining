@@ -43,11 +43,13 @@ public class ProductAssestServiceImpl implements ProductAssestService {
         ProductAssest currentProductAssest = this.productAssestRepository.findById(id).orElseThrow(() -> 
         new NoSuchElementException("ProductAssest not found"));
         
-        if(updateProductAssest.getProduct().getId() != null) {
-            this.productRepository.findById(updateProductAssest.getProduct().getId()).orElseThrow(() -> 
-            new NoSuchElementException("Product not found"));
+        if (updateProductAssest.getProduct() != null) {
+            if(updateProductAssest.getProduct().getId() != null) {
+                this.productRepository.findById(updateProductAssest.getProduct().getId()).orElseThrow(() -> 
+                new NoSuchElementException("Product not found"));
 
-            currentProductAssest.getProduct().setId(updateProductAssest.getProduct().getId());
+                currentProductAssest.getProduct().setId(updateProductAssest.getProduct().getId());
+            }
         }
 
         if(updateProductAssest.getIs_main() != null) {
@@ -72,8 +74,11 @@ public class ProductAssestServiceImpl implements ProductAssestService {
     }
 
     @Override
-    public List<ProductAssest> handleGetProductAssestByProduct(Product product) {
-        return this.productAssestRepository.findByProductAndDeletedAtIsNull(product);
+    public List<ProductAssest> handleGetProductAssestByProduct(Long productId) {
+        Product currentProduct = this.productRepository.findById(productId).orElseThrow(() -> 
+            new NoSuchElementException("Product not found")
+        );
+        return this.productAssestRepository.findByProductAndDeletedAtIsNull(currentProduct);
     }
     
 

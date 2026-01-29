@@ -16,7 +16,7 @@ public interface ProductAssestService {
     public ProductAssest handleUpdateProductAssest(Long id, ProductAssest updateProductAssest);
     public void handleDeleteProductAssest(Long id);
 
-    public List<ProductAssest> handleGetProductAssestByProduct(Product product);
+    public List<ProductAssest> handleGetProductAssestByProduct(Long productId);
 
     // public Page<ProductAssest> handleGetAllProductAssests(Pageable productAssestPageable);
 }

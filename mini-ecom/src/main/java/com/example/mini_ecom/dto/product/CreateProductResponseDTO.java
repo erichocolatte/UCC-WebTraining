@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class GetProductResponseDTO {
+public class CreateProductResponseDTO {
     private String name;
     private String description;
     private Double price;
