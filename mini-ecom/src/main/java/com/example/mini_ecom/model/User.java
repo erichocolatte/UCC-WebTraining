@@ -8,17 +8,22 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.Builder;
 
+import java.util.List;
+
 import com.example.mini_ecom.util.constants.GenderEnum;
 import com.example.mini_ecom.util.constants.RoleEnum;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 
 @Entity
 @Table(name = "users")
@@ -48,4 +53,10 @@ public class User extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private GenderEnum gender;
+
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    private Cart cart;
+
+    @OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
+    private List<Order> orders;
 }

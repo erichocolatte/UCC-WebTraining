@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.example.mini_ecom.model.Categorie;
 import com.example.mini_ecom.model.Product;
 import com.example.mini_ecom.model.ProductAssest;
+import com.example.mini_ecom.repository.CartItemRepository;
 import com.example.mini_ecom.repository.CategorieRepository;
 import com.example.mini_ecom.repository.ProductAssestRepository;
 import com.example.mini_ecom.repository.ProductRepository;
@@ -23,11 +24,13 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final CategorieRepository categorieRepository;
     private final ProductAssestRepository productAssestRepository;
+    private final CartItemRepository cartItemRepository;
 
-    public ProductServiceImpl(ProductRepository productRepository, CategorieRepository categorieRepository, ProductAssestRepository productAssestRepository) {
+    public ProductServiceImpl(ProductRepository productRepository, CategorieRepository categorieRepository, ProductAssestRepository productAssestRepository, CartItemRepository cartItemRepository) {
         this.productRepository = productRepository;
         this.categorieRepository = categorieRepository;
         this.productAssestRepository = productAssestRepository;
+        this.cartItemRepository = cartItemRepository;
     }
 
     @Override
@@ -94,6 +97,11 @@ public class ProductServiceImpl implements ProductService {
         this.productAssestRepository.findByProductAndDeletedAtIsNull(currentProduct).stream().map(productAsset -> {
             productAsset.setDeletedAt(Instant.now());
             return productAsset;
+        }).toList();
+
+        this.cartItemRepository.findByProductAndDeletedAtIsNull(currentProduct).stream().map(cartItem -> {
+            cartItem.setDeletedAt(Instant.now());
+            return cartItem;
         }).toList();
 
         // this.productAssestRepository.saveAll(listProductAsset);

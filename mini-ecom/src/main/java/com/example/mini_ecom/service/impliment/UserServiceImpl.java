@@ -10,6 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.example.mini_ecom.model.User;
+import com.example.mini_ecom.repository.CartRepository;
+import com.example.mini_ecom.repository.OrderRepository;
 import com.example.mini_ecom.repository.UserRepository;
 import com.example.mini_ecom.service.UserService;
 
@@ -18,9 +20,13 @@ import jakarta.transaction.Transactional;
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final OrderRepository orderRepository; 
+    private final CartRepository cartRepository; 
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, OrderRepository orderRepository, CartRepository cartRepository) {
         this.userRepository = userRepository;
+        this.orderRepository = orderRepository;
+        this.cartRepository = cartRepository;
     }
     
     @Override
@@ -54,7 +60,17 @@ public class UserServiceImpl implements UserService {
     public void handleDeleteUser(Long id) {
         User currentUser = this.userRepository.findById(id).orElseThrow(() -> 
         new NoSuchElementException("User not found"));
-        // this.userRepository.delete(currentUser);
+
+        this.orderRepository.findByUserIdAndDeletedAtIsNull(id).forEach(order -> {
+            order.setDeletedAt(Instant.now());
+            this.orderRepository.save(order);
+        });
+
+        this.cartRepository.findByUserAndDeletedAtIsNull(currentUser).forEach(cart -> {
+            cart.setDeletedAt(Instant.now());
+            this.cartRepository.save(cart);
+        });
+
         currentUser.setDeletedAt(Instant.now());
         this.userRepository.save(currentUser);
     }
