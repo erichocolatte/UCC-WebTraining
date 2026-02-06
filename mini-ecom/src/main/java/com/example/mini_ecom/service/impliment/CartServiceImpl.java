@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import com.example.mini_ecom.model.Cart;
@@ -12,6 +13,7 @@ import com.example.mini_ecom.repository.CartItemRepository;
 import com.example.mini_ecom.repository.CartRepository;
 import com.example.mini_ecom.repository.UserRepository;
 import com.example.mini_ecom.service.CartService;
+import com.example.mini_ecom.util.SecurityUtil;
 
 import jakarta.transaction.Transactional;
 
@@ -50,6 +52,13 @@ public class CartServiceImpl implements CartService {
         Cart currentCart = this.cartRepository.findByIdAndDeletedAtIsNull(id).orElseThrow(() -> 
         new NoSuchElementException("Cart not found"));
 
+        String ownerName = SecurityUtil.getCurrentUserLogin().orElseThrow(() -> 
+        new AccessDeniedException("Can't get auth user"));
+
+        if (!currentCart.getUser().getName().equals(ownerName)) {
+            throw new AccessDeniedException("Permission denied");
+        }
+
         if (updateCart.getUser() != null) {
             this.userRepository.findByIdAndDeletedAtIsNull(updateCart.getUser().getId()).orElseThrow(() -> 
             new NoSuchElementException("User not found"));
@@ -70,6 +79,13 @@ public class CartServiceImpl implements CartService {
         Cart currentCart = this.cartRepository.findByIdAndDeletedAtIsNull(id).orElseThrow(() -> 
         new NoSuchElementException("Cart not found"));
 
+        String ownerName = SecurityUtil.getCurrentUserLogin().orElseThrow(() -> 
+        new AccessDeniedException("Can't get auth user"));
+
+        if (!currentCart.getUser().getName().equals(ownerName)) {
+            throw new AccessDeniedException("Permission denied");
+        }
+
         this.cartItemRepository.findByCartAndDeletedAtIsNull(currentCart).stream().map(cartItem -> {
             cartItem.setDeletedAt(Instant.now());
             // this.cartItemRepository.save(cartItem);
@@ -84,6 +100,14 @@ public class CartServiceImpl implements CartService {
     public List<Cart> handleGetAllCartsByUserId(Long userId) {
         User currentUser = this.userRepository.findByIdAndDeletedAtIsNull(userId).orElseThrow(() -> 
         new NoSuchElementException("User not found"));
+
+        // User ownUser = SecurityUtil.getCurrentUserLogin().get();
+        String ownerName = SecurityUtil.getCurrentUserLogin().orElseThrow(() -> 
+        new AccessDeniedException("Can't get auth user"));
+
+        if (!currentUser.getName().equals(ownerName)) {
+            throw new AccessDeniedException("Permission denied");
+        }
 
         return this.cartRepository.findByUserAndDeletedAtIsNull(currentUser);
     }

@@ -2,6 +2,8 @@ package com.example.mini_ecom.model;
 
 import java.time.Instant;
 
+import com.example.mini_ecom.util.SecurityUtil;
+
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreRemove;
@@ -28,12 +30,13 @@ public class BaseEntity {
     @PrePersist
     public void prePersist() {
         this.createdAt = Instant.now();
-        this.updatedAt = Instant.now();
+        this.createdBy = SecurityUtil.getCurrentUserLogin().orElse("Unknown");
     }
 
     @PreUpdate
     public void preUpdate() {
         this.updatedAt = Instant.now();
+        this.updatedBy = SecurityUtil.getCurrentUserLogin().orElse("Unknown");
     }
 
     // @PreRemove

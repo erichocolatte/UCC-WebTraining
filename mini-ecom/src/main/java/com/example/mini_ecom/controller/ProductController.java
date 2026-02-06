@@ -3,8 +3,10 @@ package com.example.mini_ecom.controller;
 import java.time.Instant;
 import java.util.List;
 
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,6 +29,8 @@ import com.example.mini_ecom.model.Product;
 import com.example.mini_ecom.service.ProductService;
 
 import jakarta.validation.Valid;
+
+import org.springframework.data.domain.Sort;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -171,6 +175,8 @@ public class ProductController {
     @GetMapping("/products/categorie/{categoryId}")
     public ResponseEntity<ApiResponseDTO<?>> getAllProductsByCategory(
         @PathVariable Long categoryId,
+        @ParameterObject
+        @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC)
         Pageable productPageable
     ) {
         // Product product = this.productService.handleGetProductById(id);

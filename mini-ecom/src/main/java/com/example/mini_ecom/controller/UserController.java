@@ -3,6 +3,7 @@ package com.example.mini_ecom.controller;
 import java.time.Instant;
 import java.util.List;
 
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,9 @@ import com.example.mini_ecom.service.UserService;
 
 import jakarta.validation.Valid;
 
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+
 @RestController
 @RequestMapping("/api/v1")
 public class UserController {
@@ -36,6 +40,8 @@ public class UserController {
     
     @GetMapping("/users")
     public ResponseEntity<ApiResponseDTO<?>> getAllUsers(
+        @ParameterObject
+        @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC)
         Pageable userPageable
     ) {
         Page<User> currentPage = this.userService.handleGetAllUsers(userPageable);  

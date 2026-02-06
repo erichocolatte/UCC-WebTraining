@@ -4,13 +4,16 @@ import java.time.Instant;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import com.example.mini_ecom.model.Order;
+import com.example.mini_ecom.model.User;
 import com.example.mini_ecom.repository.OrderItemRepository;
 import com.example.mini_ecom.repository.OrderRepository;
 import com.example.mini_ecom.repository.UserRepository;
 import com.example.mini_ecom.service.OrderService;
+import com.example.mini_ecom.util.SecurityUtil;
 
 @Service
 public class OrderServiceImpl implements OrderService{
@@ -82,9 +85,17 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     public List<Order> handleGetAllOrdersByUserId(Long userId) {
-        this.userRepository.findByIdAndDeletedAtIsNull(userId).orElseThrow(() -> 
+        User currentUser = this.userRepository.findByIdAndDeletedAtIsNull(userId).orElseThrow(() -> 
         new NoSuchElementException("User not found"));
-        return this.orderRepository.findByUserIdAndDeletedAtIsNull(userId);
+
+        String ownerName = SecurityUtil.getCurrentUserLogin().orElseThrow(() -> 
+        new AccessDeniedException("Can't get auth user"));
+
+        if (!currentUser.getName().equals(ownerName)) {
+            throw new AccessDeniedException("Permission denied");
+        }
+
+        return this.orderRepository.findByUserAndDeletedAtIsNull(currentUser);
     }
 
 

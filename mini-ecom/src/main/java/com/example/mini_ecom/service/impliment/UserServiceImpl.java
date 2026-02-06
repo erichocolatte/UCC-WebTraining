@@ -34,6 +34,9 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsByEmailAndDeletedAtIsNull(newUser.getEmail())) {
             throw new RuntimeException("Email already exists");
         }
+        if (userRepository.existsByNameAndDeletedAtIsNull(newUser.getName())) {
+            throw new RuntimeException("Name already exists");
+        }
         return this.userRepository.save(newUser);
     }
 
