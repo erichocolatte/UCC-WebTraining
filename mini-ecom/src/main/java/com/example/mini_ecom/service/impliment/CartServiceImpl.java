@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import com.example.mini_ecom.model.Cart;
@@ -30,9 +31,19 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
+    // @PreAuthorize("hasRole('USER')")
     public Cart handleCreateCart(Cart newCart) {
+        System.out.println(newCart.getUser().getId().toString());
         if (newCart.getUser() == null) {
             throw new IllegalArgumentException("User is required");
+        }
+
+        String ownerId = SecurityUtil.getCurrentUserLogin().orElseThrow(() -> 
+        new AccessDeniedException("Can't get auth user"));
+        System.out.println(ownerId);
+
+        if (!newCart.getUser().getId().toString().equals(ownerId)) {
+            throw new AccessDeniedException("Permission denied");
         }
 
         this.userRepository.findByIdAndDeletedAtIsNull(newCart.getUser().getId()).orElseThrow(() -> 
@@ -42,20 +53,31 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
+    // @PreAuthorize("hasRole('USER')")
     public Cart handleGetCartById(Long id) {
-        return this.cartRepository.findByIdAndDeletedAtIsNull(id).orElseThrow(() -> 
+        Cart currentCart = this.cartRepository.findByIdAndDeletedAtIsNull(id).orElseThrow(() -> 
         new NoSuchElementException("Cart not found"));
+
+        String ownerId = SecurityUtil.getCurrentUserLogin().orElseThrow(() -> 
+        new AccessDeniedException("Can't get auth user"));
+
+        if (!currentCart.getUser().getId().toString().equals(ownerId)) {
+            throw new AccessDeniedException("Permission denied");
+        }
+
+        return currentCart;
     }
 
     @Override
+    // @PreAuthorize("hasRole('USER')")
     public Cart handleUpdateCart(Long id, Cart updateCart) {
         Cart currentCart = this.cartRepository.findByIdAndDeletedAtIsNull(id).orElseThrow(() -> 
         new NoSuchElementException("Cart not found"));
 
-        String ownerName = SecurityUtil.getCurrentUserLogin().orElseThrow(() -> 
+        String ownerId = SecurityUtil.getCurrentUserLogin().orElseThrow(() -> 
         new AccessDeniedException("Can't get auth user"));
 
-        if (!currentCart.getUser().getName().equals(ownerName)) {
+        if (!currentCart.getUser().getId().toString().equals(ownerId)) {
             throw new AccessDeniedException("Permission denied");
         }
 
@@ -75,14 +97,15 @@ public class CartServiceImpl implements CartService {
 
     @Override
     @Transactional
+    // @PreAuthorize("hasRole('USER')")
     public void handleDeleteCart(Long id) {
         Cart currentCart = this.cartRepository.findByIdAndDeletedAtIsNull(id).orElseThrow(() -> 
         new NoSuchElementException("Cart not found"));
 
-        String ownerName = SecurityUtil.getCurrentUserLogin().orElseThrow(() -> 
+        String ownerId = SecurityUtil.getCurrentUserLogin().orElseThrow(() -> 
         new AccessDeniedException("Can't get auth user"));
 
-        if (!currentCart.getUser().getName().equals(ownerName)) {
+        if (!currentCart.getUser().getId().toString().equals(ownerId)) {
             throw new AccessDeniedException("Permission denied");
         }
 
@@ -97,15 +120,16 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
+    // @PreAuthorize("hasRole('USER')")
     public List<Cart> handleGetAllCartsByUserId(Long userId) {
         User currentUser = this.userRepository.findByIdAndDeletedAtIsNull(userId).orElseThrow(() -> 
         new NoSuchElementException("User not found"));
 
         // User ownUser = SecurityUtil.getCurrentUserLogin().get();
-        String ownerName = SecurityUtil.getCurrentUserLogin().orElseThrow(() -> 
+        String ownerId = SecurityUtil.getCurrentUserLogin().orElseThrow(() -> 
         new AccessDeniedException("Can't get auth user"));
 
-        if (!currentUser.getName().equals(ownerName)) {
+        if (!currentUser.getId().toString().equals(ownerId)) {
             throw new AccessDeniedException("Permission denied");
         }
 

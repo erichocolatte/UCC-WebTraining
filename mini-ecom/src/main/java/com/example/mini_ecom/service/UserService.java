@@ -16,4 +16,10 @@ public interface UserService {
     public void handleDeleteUser(Long id);
 
     public Page<User> handleGetAllUsers(Pageable userPageable);
+
+    public User handleGetUserByEmail(String email);
+
+    public void handleUpdateRefreshToken(Long userId, String refreshToken);
+
+    // public void handleUpdateRefreshToken
 }

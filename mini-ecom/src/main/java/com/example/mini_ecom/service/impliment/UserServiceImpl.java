@@ -81,5 +81,20 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<User> handleGetAllUsers(Pageable userPageable) {
         return this.userRepository.findAll(userPageable);
+    }   
+
+    @Override
+    public User handleGetUserByEmail(String email) {
+        return this.userRepository.findByEmailAndDeletedAtIsNull(email).orElseThrow(() -> 
+        new NoSuchElementException("User not found"));
+    }
+
+    @Override
+    public void handleUpdateRefreshToken(Long userId, String refreshToken) {
+        User currentUser = this.userRepository.findById(userId).orElseThrow(() -> 
+        new NoSuchElementException("User not found"));
+        
+        currentUser.setRefreshToken(refreshToken);
+        this.userRepository.save(currentUser);
     }
 }

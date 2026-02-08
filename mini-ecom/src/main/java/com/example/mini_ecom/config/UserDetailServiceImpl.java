@@ -4,8 +4,8 @@ import java.util.Collections;
 import java.util.NoSuchElementException;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import com.example.mini_ecom.model.User;
@@ -20,14 +20,15 @@ public class UserDetailServiceImpl implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) {
+    public CustomUserDetails loadUserByUsername(String username) {
         User currentUser = this.userRepository.findByEmailAndDeletedAtIsNull(username).orElseThrow(() -> 
-        new NoSuchElementException("User not found"));
+        new UsernameNotFoundException("User not found"));
 
-        return new org.springframework.security.core.userdetails.User(
+        return new CustomUserDetails(
+            currentUser.getId(),
             currentUser.getEmail(),
             currentUser.getPassword(),
-            Collections.singletonList(new SimpleGrantedAuthority(currentUser.getRole().name()))
+            Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + currentUser.getRole().name()))
         );
     }
 }

@@ -103,6 +103,7 @@ public class SecurityConfiguration {
             .requestMatchers(SWAGGER_WHITELIST).permitAll()
             .requestMatchers(AUTH_WHITELIST).permitAll()
             .requestMatchers(PUBLIC_WHITELIST).permitAll()
+            .requestMatchers("/error").permitAll()
             .anyRequest().authenticated()
         )
         .oauth2ResourceServer(oauth2 -> oauth2

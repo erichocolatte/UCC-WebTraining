@@ -13,4 +13,6 @@ public interface UserRepository extends JpaRepository<User, Long>{
     public Optional<User> findByEmailAndDeletedAtIsNull(String email);
     public Boolean existsByEmailAndDeletedAtIsNull(String email);
     public Boolean existsByNameAndDeletedAtIsNull(String name);
+
+    // public Optional<User> findByEmailAndDeletedAtIsNull(String email);
 }

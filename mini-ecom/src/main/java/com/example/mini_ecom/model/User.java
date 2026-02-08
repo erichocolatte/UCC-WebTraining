@@ -13,6 +13,7 @@ import java.util.List;
 import com.example.mini_ecom.util.constants.GenderEnum;
 import com.example.mini_ecom.util.constants.RoleEnum;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -59,4 +60,10 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
     private List<Order> orders;
+
+    @Column(columnDefinition = "MEDIUMTEXT")
+    private String refreshToken;
+
+    // @Column(name = "refresh_token_expired_at")
+    // private Instant refreshTokenExpiredAt;
 }
