@@ -368,3 +368,140 @@ ul {
 .badge-danger { background: #e74c3c; color: #fff; }
 
 .hidden { display: none; }
+
+/* Responsive Design */
+
+/* Tablet (max-width: 968px) */
+@media (max-width: 968px) {
+    .container {
+        padding: 0 15px;
+    }
+
+    /* Navbar */
+    .brand {
+        font-size: 1.3rem;
+    }
+
+    /* Main Layout */
+    .main-layout {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .sidebar-categories {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .sidebar-categories ul {
+        display: flex;
+        overflow-x: auto;
+        gap: 10px;
+        padding-bottom: 5px;
+    }
+    
+    .sidebar-categories ul li {
+        margin-bottom: 0;
+        white-space: nowrap;
+    }
+
+    .sidebar-categories a {
+        background: #f8f9fa;
+        border: 1px solid var(--border);
+    }
+    
+    .sidebar-categories a.active {
+        background: var(--text);
+        color: white;
+    }
+
+    /* Grid */
+    .grid {
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 20px;
+    }
+
+    /* Admin Sidebar */
+    .admin-layout {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        padding: 10px 0;
+    }
+
+    .sidebar-menu {
+        display: flex;
+        overflow-x: auto;
+    }
+
+    .sidebar-menu a {
+        padding: 10px 15px;
+        white-space: nowrap;
+    }
+}
+
+/* Mobile (max-width: 600px) */
+@media (max-width: 600px) {
+    /* Navbar */
+    .navbar-content {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .nav-menu {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    /* Product Detail */
+    .product-detail {
+        flex-direction: column;
+        padding: 20px;
+    }
+
+    .detail-img {
+        min-height: 250px;
+    }
+    
+    .detail-img img {
+        max-height: 300px;
+    }
+    
+    .detail-title {
+        font-size: 1.5rem;
+    }
+
+    /* Cart & Tables */
+    .table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    /* Grid */
+    .grid {
+        grid-template-columns: 1fr; /* Single column on mobile */
+    }
+    
+    /* Forms */
+    .form-container {
+        margin: 20px auto;
+        padding: 20px;
+    }
+    
+    /* Admin Dashboard Cards */
+    #dashboardSection .grid {
+        grid-template-columns: 1fr;
+    }
+    
+    /* Modal */
+    .modal-content {
+        width: 90%;
+        margin: 20% auto;
+    }
+}
