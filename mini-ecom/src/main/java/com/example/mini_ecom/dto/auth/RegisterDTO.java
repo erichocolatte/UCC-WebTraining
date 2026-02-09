@@ -4,6 +4,7 @@ import com.example.mini_ecom.util.constants.GenderEnum;
 import com.example.mini_ecom.util.constants.RoleEnum;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,7 +22,7 @@ public class RegisterDTO {
     @NotBlank(message = "Name is required")
     private String name;
 
-    @NotBlank(message = "Role is required")
+    @NotNull(message = "Role is required")
     private RoleEnum role;
     private GenderEnum gender;
 }

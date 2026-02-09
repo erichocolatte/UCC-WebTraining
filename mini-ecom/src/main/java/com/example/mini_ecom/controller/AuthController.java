@@ -68,6 +68,7 @@ public class AuthController {
             .email(currentUser.getEmail())
             .name(currentUser.getName())
             .role(currentUser.getRole())
+            .gender(currentUser.getGender())
             .build();
 
         String accessToken = this.securityUtil.createAccessToken(currentUser.getEmail(),userLoginDTO);
@@ -95,7 +96,7 @@ public class AuthController {
             )
             .data(LoginResponseDTO.builder()
                 .accessToken(accessToken)
-                .user(currentUser)
+                .user(userLoginDTO)
                 .build()
             )
             .timeStamp(Instant.now())
@@ -136,6 +137,14 @@ public class AuthController {
     public ResponseEntity<ApiResponseDTO<?>> account() {
         String userId = SecurityUtil.getCurrentUserLogin().get();
         User user = this.userService.handleGetUserById(Long.parseLong(userId));
+        UserLoginDTO userLoginDTO = UserLoginDTO.builder()
+            .id(user.getId())
+            .email(user.getEmail())
+            .name(user.getName())
+            .role(user.getRole())
+            .gender(user.getGender())
+            .build();
+            
         return ResponseEntity.ok()
         .body(ApiResponseDTO.builder()
             .status(ApiResponseDTO.ResponseStatusDTO.builder()
@@ -143,7 +152,7 @@ public class AuthController {
                 .message("Get account success")
                 .build()
             )
-            .data(user)
+            .data(userLoginDTO)
             .timeStamp(Instant.now())
             .build()
         );   
@@ -168,6 +177,7 @@ public class AuthController {
             .email(user.getEmail())
             .name(user.getName())
             .role(user.getRole())
+            .gender(user.getGender())
             .build();
         String newAccessToken = this.securityUtil.createAccessToken(user.getEmail(), userLoginDTO);
         String newRefreshToken = this.securityUtil.createRefreshToken(user.getEmail(), userLoginDTO);
@@ -188,7 +198,7 @@ public class AuthController {
             )
             .data(LoginResponseDTO.builder()
                 .accessToken(newAccessToken)
-                .user(user)
+                .user(userLoginDTO)
                 .build()
             )
             .timeStamp(Instant.now())

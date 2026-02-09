@@ -35,6 +35,7 @@ public class OrderController {
     ) {
         List<OrderResponseDTO> listOrderResponseDTO = this.orderService.handleGetAllOrdersByUserId(id).stream().map(order -> {
             return OrderResponseDTO.builder()
+                .id(order.getId())
                 .total_price(order.getTotal_price())
                 .status(order.getStatus())
                 .user(OrderUserDTO.builder()
@@ -67,6 +68,7 @@ public class OrderController {
                 .build()
             )
             .data(OrderResponseDTO.builder()
+                .id(createdOrder.getId())
                 .total_price(createdOrder.getTotal_price())
                 .status(createdOrder.getStatus())
                 .user(OrderUserDTO.builder()
@@ -90,6 +92,7 @@ public class OrderController {
                 .build()
             )
             .data(OrderResponseDTO.builder()
+                .id(currentOrder.getId())
                 .total_price(currentOrder.getTotal_price())
                 .status(currentOrder.getStatus())
                 .user(OrderUserDTO.builder()
@@ -114,6 +117,7 @@ public class OrderController {
                 .build()
             )
             .data(OrderResponseDTO.builder()
+                .id(updatedOrder.getId())
                 .total_price(updatedOrder.getTotal_price())
                 .status(updatedOrder.getStatus())
                 .user(OrderUserDTO.builder()

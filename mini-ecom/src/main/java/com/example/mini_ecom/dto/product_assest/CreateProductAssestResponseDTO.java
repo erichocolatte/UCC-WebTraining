@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class CreateProductAssestResponseDTO {
+    private Long id;
     private String assest_url;
     private Boolean is_main;
 

@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class OrderResponseDTO {
+    private Long id;
     private Double total_price;
     private OrderStatusEnum status;
 

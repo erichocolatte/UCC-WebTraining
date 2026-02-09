@@ -10,5 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class CreateCategorieResponseDTO {
+    private Long id;
     private String name;
 }

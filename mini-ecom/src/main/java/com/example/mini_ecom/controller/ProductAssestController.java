@@ -38,6 +38,7 @@ public class ProductAssestController {
     ) {
         List<GetProductAssestResponseDTO> listProductAssests = this.productAssestService.handleGetProductAssestByProduct(productId).stream().map(product_assest -> {
             return GetProductAssestResponseDTO.builder()
+                .id(product_assest.getId())
                 .assest_url(product_assest.getAssest_url())
                 .is_main(product_assest.getIs_main())
                 .product(ProductAssestProduct.builder()
@@ -69,6 +70,7 @@ public class ProductAssestController {
                 .build()
             )
             .data(CreateProductAssestResponseDTO.builder()
+                .id(createdProductAssest.getId())
                 .assest_url(createdProductAssest.getAssest_url())
                 .is_main(createdProductAssest.getIs_main())
                 .product(ProductAssestProduct.builder()
@@ -92,6 +94,7 @@ public class ProductAssestController {
                 .build()
             )
             .data(UpdateProductAssestResponseDTO.builder()
+                .id(updatedProductAssest.getId())
                 .assest_url(updatedProductAssest.getAssest_url())
                 .is_main(updatedProductAssest.getIs_main())
                 .product(ProductAssestProduct.builder()

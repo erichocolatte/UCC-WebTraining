@@ -49,6 +49,7 @@ public class ProductController {
         
         List<GetProductResponseDTO> listGetProductResponseDTO = currentPage.getContent().stream().map(product -> {
             return GetProductResponseDTO.builder()
+            .id(product.getId())
             .categorie(ProductCategorieDTO.builder()
                 // .name(product.getCategorie().getName())
                 .id(product.getCategorie().getId())
@@ -93,6 +94,7 @@ public class ProductController {
             .build()
         )
         .data(CreateProductResponseDTO.builder()
+            .id(createdProduct.getId())
             .name(createdProduct.getName())
             .description(createdProduct.getDescription())
             .price(createdProduct.getPrice())
@@ -118,6 +120,7 @@ public class ProductController {
             .build()
         )
         .data(GetProductResponseDTO.builder()
+            .id(currnetProduct.getId())
             .name(currnetProduct.getName())
             .description(currnetProduct.getDescription())
             .price(currnetProduct.getPrice())
@@ -144,6 +147,7 @@ public class ProductController {
             .build()
         )
         .data(UpdateProductResponseDTO.builder()
+            .id(updatedProduct.getId())
             .name(updatedProduct.getName())
             .description(updatedProduct.getDescription())
             .price(updatedProduct.getPrice())
@@ -184,6 +188,7 @@ public class ProductController {
 
         List<GetProductResponseDTO> listGetProductResponseDTO = currentPage.getContent().stream().map(product -> {
             return GetProductResponseDTO.builder()
+            .id(product.getId())
             .categorie(ProductCategorieDTO.builder()
                 // .name(product.getCategorie().getName())
                 .id(product.getCategorie().getId())

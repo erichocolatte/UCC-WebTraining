@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class CartItemResponseDTO {
+    private Long id;
     private Integer quantity;
     private Double price_at_time;
     private CartItemCartDTO cart;

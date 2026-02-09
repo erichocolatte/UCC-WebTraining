@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - MiniEcom</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container navbar-content">
+            <a href="index.html" class="brand">MiniEcom</a>
+            <div class="nav-menu">
+
+                <!-- Auth Links -->
+                <div id="authLinks" style="display: flex; gap: 20px;">
+                    <a href="login.html" class="nav-item">Login</a>
+                    <a href="register.html" class="nav-item">Register</a>
+                </div>
+                <!-- User Links (Hidden by default) -->
+                <div id="userLinks" style="display: none; gap: 20px; align-items: center;">
+                    <a href="cart.html" class="nav-item">Cart</a>
+                    <span id="userName" style="font-weight: bold;"></span>
+                    <a href="#" id="adminLink" class="nav-item hidden">Admin</a>
+                    <a href="#" id="logoutBtn" class="nav-item" style="color: var(--accent);">Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container main-layout">
+        <aside class="sidebar-categories">
+            <h3>Categories</h3>
+            <ul id="categoryList">
+                <li><a href="#" onclick="loadProducts()" class="active">All Products</a></li>
+                <!-- Categories will be loaded here -->
+            </ul>
+        </aside>
+
+        <main class="product-section">
+            <div class="grid" id="productGrid">
+                <!-- Products will be loaded here -->
+            </div>
+
+            <div style="text-align: center; margin: 30px 0;">
+                <button id="prevPageBtn" class="btn btn-outline" disabled>Previous</button>
+                <span id="pageInfo" style="margin: 0 15px;">Page 1</span>
+                <button id="nextPageBtn" class="btn btn-outline">Next</button>
+            </div>
+        </main>
+    </div>
+
+    <script src="utils.js"></script>
+    <script src="index.js"></script>
+</body>
+</html>
