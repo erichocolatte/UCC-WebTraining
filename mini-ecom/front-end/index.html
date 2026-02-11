@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav>
+        <div class="container navbar-content">
+            <div class="brand">
+                <a href="/front-end/index.html">
+                    <h2>MiniEcom</h2>
+                </a>
+            </div>
+
+            <div class="nav-links">
+                <div class="user-links links" id="user-links">
+                    <a href="/front-end/cart.html">Cart</a>
+                    <a href="/front-end/account.html" class="user-name">Account</a>
+                </div>
+
+                <div class="admin-links links" id="admin-links">
+                    <a href="/front-end/admin.html">Admin</a>
+                </div>
+
+                <div class="auth-links links" id="auth-links">
+                    <a href="/front-end/login.html">Login</a>
+                    <a href="/front-end/register.html">Register</a>
+                </div>
+
+            </div>
+        </div>
+    </nav>
+
+    <div class="container main-layout">
+        <aside class="sidebar-categories">
+            <h2>Categories</h2>
+            <ul class="category-list" id="category-list">
+                <li><a href="#" class="active" id="all-products">All Products</a></li>
+            </ul>
+        </aside>
+
+        <main class="product-section">
+            <div class="search-section">
+                <input type="text" id="search-input" placeholder="Search products...">
+                <button id="search-btn" class="btn btn-primary">Search</button>
+            </div>
+
+            <div class="product-grid">
+                <div class="product-card">
+                    <img class="product-image" src="https://raw.githubusercontent.com/phuong0107/UCC_WebTraining/refs/heads/main/assests/354912804_582013974090382_1597928518153411456_n.jpg" alt="">
+                    <p class="product-category">Category</p>
+                    <div class="product-info">
+                        <h3 class="product-name">Product Name</h3>
+                        <p class="product-description">Description</p>
+                        <p class="product-price">$19.99</p>
+                        <button class="btn btn-primary">Add to Cart</button>
+                    </div>
+                </div>  
+            </div>
+
+            <div class="pagination">
+                <button id="prev-page" class="btn btn-outline" disabled>Previous</button>
+                <span id="page-info" class="page-info">Page 1</span>
+                <button id="next-page" class="btn btn-outline">Next</button>
+            </div>
+        </main>
+    </div>
+
+    <script src="index.js"></script>
+    <script src="utils.js"></script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account - MiniEcom</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container navbar-content">
+            <a href="index.html" class="brand">MiniEcom</a>
+            <div class="nav-menu">
+                <a href="index.html" class="nav-item">Home</a>
+                <!-- Auth Links -->
+                <div id="authLinks" style="display: flex; gap: 20px;">
+                    <a href="login.html" class="nav-item">Login</a>
+                    <a href="register.html" class="nav-item">Register</a>
+                </div>
+                <!-- User Links (Hidden by default) -->
+                <div id="userLinks" style="display: none; gap: 20px; align-items: center;">
+                    <a href="cart.html" class="nav-item">Cart</a>
+                    <a href="account.html" id="userName" style="font-weight: bold; color: var(--accent);"></a>
+                    <a href="#" id="adminLink" class="nav-item hidden">Admin</a>
+                    <a href="#" id="logoutBtn" class="nav-item">Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container" style="margin-top: 40px;">
+        <h2>My Account</h2>
+        
+        <div class="grid" style="grid-template-columns: 1fr 2fr; align-items: start;">
+            <!-- Profile Section -->
+            <div class="card p-3">
+                <div class="card-body">
+                    <h3>Profile Information</h3>
+                    <div style="margin-top: 20px;">
+                        <p><strong>Name:</strong> <span id="profileName">Loading...</span></p>
+                        <p><strong>Email:</strong> <span id="profileEmail">Loading...</span></p>
+                        <p><strong>Role:</strong> <span id="profileRole">Loading...</span></p>
+                        <p><strong>Gender:</strong> <span id="profileGender">Loading...</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order History Section -->
+            <div>
+                <h3>Order History</h3>
+                <div class="card" style="margin-top: 0; box-shadow: none; border: 1px solid var(--border);">
+                    <div style="overflow-x: auto;">
+                        <table class="table" style="margin-top: 0;">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Date</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ordersTableBody">
+                                <tr><td colspan="5">Loading orders...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Details Modal -->
+    <div id="orderModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeOrderModal()">&times;</span>
+            <h2 id="orderModalTitle">Order Details</h2>
+            <div id="orderItemsList"></div>
+        </div>
+    </div>
+
+    <script src="utils.js"></script>
+    <script src="account.js"></script>
+</body>
+</html>

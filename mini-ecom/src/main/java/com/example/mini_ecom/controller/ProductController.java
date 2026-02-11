@@ -3,6 +3,8 @@ package com.example.mini_ecom.controller;
 import java.time.Instant;
 import java.util.List;
 
+import com.example.mini_ecom.dto.product_assest.GetProductAssestResponseDTO;
+
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -43,6 +45,8 @@ public class ProductController {
 
     @GetMapping("/products")
     public ResponseEntity<ApiResponseDTO<?>> getAllProducts(
+        @ParameterObject
+        @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC)
         Pageable productPageable
     ) {
         Page<Product> currentPage = this.productService.handleGetAllProducts(productPageable);
@@ -57,6 +61,11 @@ public class ProductController {
             .name(product.getName())
             .description(product.getDescription())
             .price(product.getPrice())
+            .assets(product.getProductAssets() != null ? product.getProductAssets().stream().map(asset -> GetProductAssestResponseDTO.builder()
+                .id(asset.getId())
+                .assest_url(asset.getAssest_url())
+                .is_main(asset.getIs_main())
+                .build()).toList() : null)
             .build();
         }).toList();
 
@@ -100,8 +109,8 @@ public class ProductController {
             .price(createdProduct.getPrice())
             .stock(createdProduct.getStock())
             .categorie(ProductCategorieDTO.builder()
-                // .name(createdProduct.getCategorie().getName())
                 .id(createdProduct.getCategorie().getId())
+                .name(createdProduct.getCategorie().getName())
                 .build())
             .build())
         .timeStamp(Instant.now())
@@ -126,9 +135,14 @@ public class ProductController {
             .price(currnetProduct.getPrice())
             .stock(currnetProduct.getStock())
             .categorie(ProductCategorieDTO.builder()
-                // .name(currnetProduct.getCategorie().getName())
+                .name(currnetProduct.getCategorie().getName())
                 .id(currnetProduct.getCategorie().getId())
                 .build())
+            .assets(currnetProduct.getProductAssets() != null ? currnetProduct.getProductAssets().stream().map(asset -> GetProductAssestResponseDTO.builder()
+                .id(asset.getId())
+                .assest_url(asset.getAssest_url())
+                .is_main(asset.getIs_main())
+                .build()).toList() : null)
             .build())
         .timeStamp(Instant.now())
         .build());
@@ -153,7 +167,7 @@ public class ProductController {
             .price(updatedProduct.getPrice())
             .stock(updatedProduct.getStock())
             .categorie(ProductCategorieDTO.builder()
-                // .name(updatedProduct.getCategorie().getName())
+                .name(updatedProduct.getCategorie().getName())
                 .id(updatedProduct.getCategorie().getId())
                 .build())
             .build())
@@ -190,12 +204,17 @@ public class ProductController {
             return GetProductResponseDTO.builder()
             .id(product.getId())
             .categorie(ProductCategorieDTO.builder()
-                // .name(product.getCategorie().getName())
+                .name(product.getCategorie().getName())
                 .id(product.getCategorie().getId())
                 .build())
             .name(product.getName())
             .description(product.getDescription())
             .price(product.getPrice())
+            .assets(product.getProductAssets() != null ? product.getProductAssets().stream().map(asset -> GetProductAssestResponseDTO.builder()
+                .id(asset.getId())
+                .assest_url(asset.getAssest_url())
+                .is_main(asset.getIs_main())
+                .build()).toList() : null)
             .build();
         }).toList();
 

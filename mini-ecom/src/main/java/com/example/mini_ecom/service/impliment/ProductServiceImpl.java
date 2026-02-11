@@ -113,7 +113,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Page<Product> handleGetAllProducts(Pageable productPageable) {
-        return this.productRepository.findAll(productPageable);
+        return this.productRepository.findAllByDeletedAtIsNull(productPageable);
     }
 
     // @Override

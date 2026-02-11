@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 let currentPage = 0;
-const pageSize = 20;
+const pageSize = 5;
 let currentCategoryId = null;
 
 function updateUIForAuth() {
