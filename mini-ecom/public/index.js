@@ -1,15 +1,10 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    // 1. Check Auth State
     updateUIForAuth();
 
-    // 2. Load Categories
     await loadCategories();
 
-    // 3. Load Products
     await loadProducts();
 
-    // 4. Setup Event Listeners
-    // setupPagination(); // Removed as it is undefined and logic is in updatePagination called by loadProducts
     const logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) {
         logoutBtn.addEventListener('click', (e) => {
@@ -55,7 +50,6 @@ async function loadCategories() {
             const categories = response.data.result;
             const categoryList = document.getElementById('categoryList');
             
-            // Clear list but keep "All Products"
             categoryList.innerHTML = '<li><a href="#" onclick="loadProducts()" ' + (currentCategoryId === null ? 'class="active"' : '') + '>All Products</a></li>';
             
             categories.forEach(cat => {
@@ -71,7 +65,6 @@ async function loadCategories() {
                     currentPage = 0;
                     loadProducts();
                     
-                    // Update active state
                     document.querySelectorAll('.sidebar-categories a').forEach(a => a.classList.remove('active'));
                     link.classList.add('active');
                 });
@@ -155,5 +148,3 @@ function updatePagination(meta) {
         }
     };
 }
-
-// Enhance loadProducts to update sidebar active state purely if needed (optional, effectively done in click handlers)

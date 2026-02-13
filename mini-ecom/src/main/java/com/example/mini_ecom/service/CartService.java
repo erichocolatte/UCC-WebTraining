@@ -11,4 +11,5 @@ public interface CartService {
     public void handleDeleteCart(Long id);
     // public Page<Cart> handleGetAllCarts(Pageable cartPageable);
     public List<Cart> handleGetAllCartsByUserId(Long userId);
+    public Cart handleGetActiveCartByUserId(Long userId);
 }

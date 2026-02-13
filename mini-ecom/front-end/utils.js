@@ -31,7 +31,7 @@ const Auth = {
         
         Auth.removeToken();
         Auth.removeUser();
-        window.location.href = '/login.html';
+        // window.location.href = '/login.html';
     },
 
     isAdmin: () => {

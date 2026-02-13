@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     checkAuth();
     await loadCategories();
     await loadProducts();
+    logout();
 });
 
 function checkAuth() {
@@ -31,17 +32,15 @@ const pageSize = 20;
 let currentCategoryId = null;
 
 async function loadCategories() {
+    // ?????
     try {
         const response = await api.get('/categories');
         if (response.status.statusCode == "OK") {
             const categories = response.data.result;
             const categoryList = document.getElementById('category-list');
             
-            // Clear existing list except maybe "All Products" if you want to keep it
-            // For now, let's just clear and rebuild or assume the HTML has the base.
             categoryList.innerHTML = '';
             
-            // Re-add "All Products" link
             const allLi = document.createElement('li');
             allLi.classList.add('links');
             const allLink = document.createElement('a');
@@ -91,7 +90,6 @@ async function loadProducts() {
     const prevBtn = document.getElementById('prev-page');
     const nextBtn = document.getElementById('next-page');
 
-    // Disable pagination during load
     if (prevBtn) prevBtn.disabled = true;
     if (nextBtn) nextBtn.disabled = true;
 
@@ -119,7 +117,7 @@ async function loadProducts() {
                         <h3 class="product-name">${product.name}</h3>
                         <p class="product-description">${product.description}</p>
                         <p class="product-price">${UI.formatCurrency(product.price)}</p>
-                        <button class="btn btn-primary" onclick="addToCart(${product.id})">Add to Cart</button>
+                        <button class="btn btn-primary" onclick="addToCart(${product.id}, ${product.price})">Add to Cart</button>
                     </div>
                 `;
                 productGrid.appendChild(productCard);
@@ -136,7 +134,6 @@ function updatePagination(meta) {
     const nextBtn = document.getElementById('next-page');
     const pageInfo = document.getElementById('page-info');
 
-    // Sync state with backend
     currentPage = meta.page;
 
     pageInfo.textContent = `Page ${meta.page + 1} of ${meta.pages || 1}`;
@@ -161,4 +158,61 @@ function updatePagination(meta) {
     };
 }
 
+async function addToCart(productId,priceAtTime) {
+    if (!Auth.isLoggedIn()) {
+        window.location.href = 'login.html';
+        return;
+    }
 
+    try {
+        const user = Auth.getUser();
+        let response = await api.get(`/carts/active/user/${user.id}`)
+        let cartId = response.data.id
+
+        if (response.status.statusCode == "OK") {
+            if (response.data.id == null) {
+                // Create new cart
+                response = await api.post('/carts', {
+                    status: 'ACTIVE',
+                    user: { id: user.id }
+                })
+
+                if (response.status.statusCode == "CREATED") {
+                    cartId = response.data.id
+                } else {
+                    alert("Failed to create cart")
+                }
+            }
+        }
+
+        if (cartId) {
+            const response = await api.post('/cart-items', {
+                cart: { id: cartId },
+                product: { id: productId },
+                quantity: 1,
+                price_at_time: priceAtTime
+            })
+
+            if (response.status.statusCode == "CREATED") {
+                alert("Add to cart successfully")
+            } else {
+                alert("Failed to add to cart")
+            }
+        }
+    } catch (error) {
+        console.error('Failed to add to cart', error);
+        alert("Failed to add to cart")
+    }
+    
+    
+}
+
+function logout() {
+    const logout = document.getElementById('logout');
+    logout.addEventListener('click', async (e) => {
+        e.preventDefault();
+        Auth.logout();
+        // window.location.href = '/front-end/login.html';
+        window.location.reload();
+    });
+}

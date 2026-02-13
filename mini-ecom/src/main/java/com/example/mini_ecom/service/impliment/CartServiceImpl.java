@@ -15,6 +15,7 @@ import com.example.mini_ecom.repository.CartRepository;
 import com.example.mini_ecom.repository.UserRepository;
 import com.example.mini_ecom.service.CartService;
 import com.example.mini_ecom.util.SecurityUtil;
+import com.example.mini_ecom.util.constants.CartStatusEnum;
 
 import jakarta.transaction.Transactional;
 
@@ -48,6 +49,14 @@ public class CartServiceImpl implements CartService {
 
         this.userRepository.findByIdAndDeletedAtIsNull(newCart.getUser().getId()).orElseThrow(() -> 
         new NoSuchElementException("User not found"));
+
+        if (newCart.getStatus() == CartStatusEnum.ACTIVE) {
+            this.cartRepository.findByUserAndStatusAndDeletedAtIsNull(newCart.getUser(), CartStatusEnum.ACTIVE)
+                .ifPresent(activeCart -> {
+                    activeCart.setStatus(CartStatusEnum.ARCHIVED);
+                    this.cartRepository.save(activeCart);
+                });
+        }
 
         return this.cartRepository.save(newCart);
     }
@@ -89,6 +98,13 @@ public class CartServiceImpl implements CartService {
         }
 
         if (updateCart.getStatus() != null) {
+            if (updateCart.getStatus() == CartStatusEnum.ACTIVE && currentCart.getStatus() != CartStatusEnum.ACTIVE) {
+                 this.cartRepository.findByUserAndStatusAndDeletedAtIsNull(currentCart.getUser(), CartStatusEnum.ACTIVE)
+                    .ifPresent(activeCart -> {
+                        activeCart.setStatus(CartStatusEnum.ARCHIVED);
+                        this.cartRepository.save(activeCart);
+                    });
+            }
             currentCart.setStatus(updateCart.getStatus());
         }
 
@@ -134,5 +150,21 @@ public class CartServiceImpl implements CartService {
         }
 
         return this.cartRepository.findByUserAndDeletedAtIsNull(currentUser);
+    }
+
+    @Override
+    public Cart handleGetActiveCartByUserId(Long userId) {
+        User currentUser = this.userRepository.findByIdAndDeletedAtIsNull(userId).orElseThrow(() -> 
+        new NoSuchElementException("User not found"));
+
+        String ownerId = SecurityUtil.getCurrentUserLogin().orElseThrow(() -> 
+        new AccessDeniedException("Can't get auth user"));
+
+        if (!currentUser.getId().toString().equals(ownerId)) {
+            throw new AccessDeniedException("Permission denied");
+        }
+
+        return this.cartRepository.findByUserAndStatusAndDeletedAtIsNull(currentUser, CartStatusEnum.ACTIVE)
+            .orElseThrow(() -> new NoSuchElementException("Active cart not found"));
     }
 }

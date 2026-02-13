@@ -88,14 +88,11 @@ async function addToCart(product) {
         const user = Auth.getUser();
         
         // 1. Get existing cart
-        const cartsResponse = await api.get(`/carts/user/${user.id}`);
+        const cartsResponse = await api.get(`/carts/active/user/${user.id}`);
         let cartId = null;
-
-        if (cartsResponse.status && cartsResponse.status.statusCode === 'OK') {
-            const carts = cartsResponse.data;
-             if (carts.length > 0) {
-                 cartId = carts[0].id;
-             }
+        console.log(cartsResponse);
+        if (cartsResponse.status && cartsResponse.status.statusCode === 'OK' && cartsResponse.data) {
+             cartId = cartsResponse.data.id;
         }
 
         // 2. Create cart if not exists

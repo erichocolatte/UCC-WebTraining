@@ -55,8 +55,8 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private GenderEnum gender;
 
-    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
-    private Cart cart;
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Cart> carts;
 
     @OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
     private List<Order> orders;

@@ -50,6 +50,28 @@ public class CartController {
         .build());
     }
 
+    @GetMapping("/carts/active/user/{userId}")
+    public ResponseEntity<ApiResponseDTO<?>> getActiveCartByUserId(
+        @PathVariable("userId") Long userId
+    ) {
+        Cart activeCart = this.cartService.handleGetActiveCartByUserId(userId);
+        CartResponseDTO cartResponseDTO = CartResponseDTO.builder()
+            .id(activeCart.getId())
+            .status(activeCart.getStatus())
+            .user(CartUserDTO.builder()
+                .id(activeCart.getUser().getId())
+                .build())
+            .build();
+        return ResponseEntity.ok(ApiResponseDTO.builder()
+            .status(ApiResponseDTO.ResponseStatusDTO.builder()
+                .statusCode(HttpStatus.OK)
+                .message("Get active cart by user id successfully")
+                .build())
+            .data(cartResponseDTO)
+            .timeStamp(Instant.now())
+            .build());
+    }
+
     @PostMapping("/carts")
     public ResponseEntity<ApiResponseDTO<?>> createCart(
         @RequestBody Cart newCart

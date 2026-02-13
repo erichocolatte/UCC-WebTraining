@@ -17,10 +17,10 @@ async function loadCart() {
 
     try {
         const user = Auth.getUser();
-        const cartsResponse = await api.get(`/carts/user/${user.id}`);
+        const cartsResponse = await api.get(`/carts/active/user/${user.id}`);
         
-        if (cartsResponse.status && cartsResponse.status.statusCode === 'OK' && cartsResponse.data.length > 0) {
-            currentCartId = cartsResponse.data[0].id;
+        if (cartsResponse.status && cartsResponse.status.statusCode === 'OK' && cartsResponse.data) {
+            currentCartId = cartsResponse.data.id;
             
             // Get Cart Items
             // CartItemController: GET /api/v1/cart-items/cart/{cartId}
@@ -186,28 +186,7 @@ async function checkout() {
              // .data(OrderResponseDTO.builder()... no ID field for Order itself!?
              // This is another DTO issue.
              
-             alert('Order placed successfully! (Note: Order ID missing in response)');
-             
-             // Optionally: Clear cart items?
-             // Since we have no "Cart to Order" backend logic, we manually clear cart items?
-             // Or just leave them?
-             // For a real demo, we should probably clear them.
-             
-             // Get attributes for delete
-            //  const itemsResponse = await api.get(`/cart-items/cart/${currentCartId}`);
-            //  if (itemsResponse.data) {
-            //      for(const item of itemsResponse.data) {
-            //          await api.delete(`/cart-items/${item.id}`);
-            //      }
-            //  }
-             
-             // Or archive the cart?
-             // CartController updateCart
-             await api.put(`/carts/${currentCartId}`, {
-                 status: 'ARCHIVED',
-                 user: { id: user.id }
-             });
-             
+             alert('Order placed successfully!');
              window.location.href = 'index.html';
          } else {
              alert('Checkout failed.');

@@ -8,13 +8,16 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import com.example.mini_ecom.model.Cart;
 import com.example.mini_ecom.model.Order;
 import com.example.mini_ecom.model.User;
+import com.example.mini_ecom.repository.CartRepository;
 import com.example.mini_ecom.repository.OrderItemRepository;
 import com.example.mini_ecom.repository.OrderRepository;
 import com.example.mini_ecom.repository.UserRepository;
 import com.example.mini_ecom.service.OrderService;
 import com.example.mini_ecom.util.SecurityUtil;
+import com.example.mini_ecom.util.constants.CartStatusEnum;
 
 import jakarta.transaction.Transactional;
 
@@ -23,14 +26,17 @@ public class OrderServiceImpl implements OrderService{
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final OrderItemRepository orderItemRepository;
+    private final CartRepository cartRepository;
 
-    public OrderServiceImpl(OrderRepository orderRepository, UserRepository userRepository, OrderItemRepository orderItemRepository) {
+    public OrderServiceImpl(OrderRepository orderRepository, UserRepository userRepository, OrderItemRepository orderItemRepository, CartRepository cartRepository) {
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
         this.orderItemRepository = orderItemRepository;
+        this.cartRepository = cartRepository;
     }
 
     @Override
+    @Transactional
     // @PreAuthorize("hasRole('USER')")
     public Order handleCreateOrder(Order newOrder) {
         if (newOrder.getUser() == null) {
@@ -44,8 +50,21 @@ public class OrderServiceImpl implements OrderService{
             throw new AccessDeniedException("Permission denied");
         }
 
-        this.userRepository.findByIdAndDeletedAtIsNull(newOrder.getUser().getId()).orElseThrow(() -> 
+        User currentUser = this.userRepository.findByIdAndDeletedAtIsNull(newOrder.getUser().getId()).orElseThrow(() -> 
         new NoSuchElementException("User not found"));
+
+        // ERP Logic: Archive current ACTIVE cart and create a new one
+        Cart activeCart = this.cartRepository.findByUserAndStatusAndDeletedAtIsNull(currentUser, CartStatusEnum.ACTIVE)
+            .orElseThrow(() -> new NoSuchElementException("Active cart not found"));
+        
+        activeCart.setStatus(CartStatusEnum.ARCHIVED);
+        this.cartRepository.save(activeCart);
+
+        Cart newCart = Cart.builder()
+            .user(currentUser)
+            .status(CartStatusEnum.ACTIVE)
+            .build();
+        this.cartRepository.save(newCart);
 
         return this.orderRepository.save(newOrder);
     }
