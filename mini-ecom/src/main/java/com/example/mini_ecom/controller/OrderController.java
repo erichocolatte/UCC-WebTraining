@@ -33,24 +33,13 @@ public class OrderController {
     public ResponseEntity<ApiResponseDTO<?>> getAllOrdersByUser(
         @PathVariable("userId") Long id
     ) {
-        List<OrderResponseDTO> listOrderResponseDTO = this.orderService.handleGetAllOrdersByUserId(id).stream().map(order -> {
-            return OrderResponseDTO.builder()
-                .id(order.getId())
-                .total_price(order.getTotal_price())
-                .status(order.getStatus())
-                .user(OrderUserDTO.builder()
-                    .id(order.getUser().getId())
-                    .build())
-                .build();
-        }).toList();
-
         return ResponseEntity.ok(ApiResponseDTO.builder()
             .status(ApiResponseDTO.ResponseStatusDTO.builder()
                 .statusCode(HttpStatus.OK)
                 .message("Get all orders successfully")
                 .build()
             )
-            .data(listOrderResponseDTO)
+            .data(this.orderService.handleGetAllOrdersByUserId(id))
             .timeStamp(Instant.now())
             .build()
         );
@@ -60,21 +49,13 @@ public class OrderController {
     public ResponseEntity<ApiResponseDTO<?>> createOrder(
         @RequestBody Order newOrder
     ) {
-        Order createdOrder = this.orderService.handleCreateOrder(newOrder);
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponseDTO.builder()
             .status(ApiResponseDTO.ResponseStatusDTO.builder()
                 .statusCode(HttpStatus.CREATED)
                 .message("Order created successfully")
                 .build()
             )
-            .data(OrderResponseDTO.builder()
-                .id(createdOrder.getId())
-                .total_price(createdOrder.getTotal_price())
-                .status(createdOrder.getStatus())
-                .user(OrderUserDTO.builder()
-                    .id(createdOrder.getUser().getId())
-                    .build())
-                .build())
+            .data(this.orderService.handleCreateOrder(newOrder))
             .timeStamp(Instant.now())
             .build()
         );
@@ -84,22 +65,13 @@ public class OrderController {
     public ResponseEntity<ApiResponseDTO<?>> getOrder(
         @PathVariable("id") Long id
     ) {
-        Order currentOrder = this.orderService.handleGetOrderById(id);
         return ResponseEntity.ok(ApiResponseDTO.builder()
             .status(ApiResponseDTO.ResponseStatusDTO.builder()
                 .statusCode(HttpStatus.OK)
                 .message("Get order successfully")
                 .build()
             )
-            .data(OrderResponseDTO.builder()
-                .id(currentOrder.getId())
-                .total_price(currentOrder.getTotal_price())
-                .status(currentOrder.getStatus())
-                .user(OrderUserDTO.builder()
-                    .id(currentOrder.getUser().getId())
-                    .build())
-                .build())
-            .timeStamp(Instant.now())
+            .data(this.orderService.handleGetOrderById(id))
             .build()
         );
     }
@@ -109,21 +81,13 @@ public class OrderController {
         @PathVariable("id") Long id,
         @RequestBody Order updateOrder
     ) {
-        Order updatedOrder = this.orderService.handleUpdateOrder(id, updateOrder);
         return ResponseEntity.ok(ApiResponseDTO.builder()
             .status(ApiResponseDTO.ResponseStatusDTO.builder()
                 .statusCode(HttpStatus.OK)
                 .message("Order updated successfully")
                 .build()
             )
-            .data(OrderResponseDTO.builder()
-                .id(updatedOrder.getId())
-                .total_price(updatedOrder.getTotal_price())
-                .status(updatedOrder.getStatus())
-                .user(OrderUserDTO.builder()
-                    .id(updatedOrder.getUser().getId())
-                    .build())
-                .build())
+            .data(this.orderService.handleUpdateOrder(id, updateOrder))
             .timeStamp(Instant.now())
             .build()
         );

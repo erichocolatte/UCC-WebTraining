@@ -2,7 +2,6 @@ package com.example.mini_ecom.dto.product;
 
 import java.util.List;
 
-import com.example.mini_ecom.dto.product_assest.GetProductAssestResponseDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class GetProductResponseDTO {
+public class ProductResponseDTO {
     private Long id;
     private String name;
     private String description;
@@ -21,5 +20,5 @@ public class GetProductResponseDTO {
     private Integer stock;
 
     private ProductCategorieDTO categorie;
-    private List<GetProductAssestResponseDTO> assets;
+    private List<ProductAssestDTO> assets;
 }

@@ -6,6 +6,9 @@ import java.util.NoSuchElementException;
 
 import org.springframework.stereotype.Service;
 
+import com.example.mini_ecom.dto.cart_item.CartItemCartDTO;
+import com.example.mini_ecom.dto.cart_item.CartItemProductDTO;
+import com.example.mini_ecom.dto.cart_item.CartItemResponseDTO;
 import com.example.mini_ecom.model.Cart;
 import com.example.mini_ecom.model.CartItem;
 import com.example.mini_ecom.model.Product;
@@ -28,7 +31,7 @@ public class CartItemServiceImpl implements CartItemService {
     }
 
     @Override
-    public CartItem handleCreateCartItem(CartItem newCartItem) {
+    public CartItemResponseDTO handleCreateCartItem(CartItem newCartItem) {
         if (newCartItem.getCart() == null) {
             throw new IllegalArgumentException("Cart is required");
         } else {
@@ -64,14 +67,36 @@ public class CartItemServiceImpl implements CartItemService {
         // if cart item is exist, update quantity
         if (currentCartItem != null) {
             currentCartItem.setQuantity(currentCartItem.getQuantity() + newCartItem.getQuantity());
-            return this.cartItemRepository.save(currentCartItem);
+            CartItem updatedCartItem = this.cartItemRepository.save(currentCartItem);
+            return CartItemResponseDTO.builder()
+                .id(updatedCartItem.getId())
+                .quantity(updatedCartItem.getQuantity())
+                .price_at_time(updatedCartItem.getPrice_at_time())
+                .cart(CartItemCartDTO.builder()
+                    .id(updatedCartItem.getCart().getId())
+                    .build())
+                .product(CartItemProductDTO.builder()
+                    .id(updatedCartItem.getProduct().getId())
+                    .build())
+                .build();
         }
 
-        return this.cartItemRepository.save(newCartItem);
+        CartItem createdCartItem = this.cartItemRepository.save(newCartItem);
+        return CartItemResponseDTO.builder()
+            .id(createdCartItem.getId())
+            .quantity(createdCartItem.getQuantity())
+            .price_at_time(createdCartItem.getPrice_at_time())
+            .cart(CartItemCartDTO.builder()
+                .id(createdCartItem.getCart().getId())
+                .build())
+            .product(CartItemProductDTO.builder()
+                .id(createdCartItem.getProduct().getId())
+                .build())
+            .build();
     }
 
     @Override
-    public CartItem handleUpdateCartItem(Long id, CartItem updateCartItem) {
+    public CartItemResponseDTO handleUpdateCartItem(Long id, CartItem updateCartItem) {
         CartItem currentCartItem = this.cartItemRepository.findByIdAndDeletedAtIsNull(id).orElseThrow(() -> 
         new NoSuchElementException("Cart item not found"));
 
@@ -79,7 +104,18 @@ public class CartItemServiceImpl implements CartItemService {
             currentCartItem.setQuantity(updateCartItem.getQuantity());
         }
 
-        return this.cartItemRepository.save(currentCartItem);
+        CartItem updatedCartItem = this.cartItemRepository.save(currentCartItem);
+        return CartItemResponseDTO.builder()
+            .id(updatedCartItem.getId())
+            .quantity(updatedCartItem.getQuantity())
+            .price_at_time(updatedCartItem.getPrice_at_time())
+            .cart(CartItemCartDTO.builder()
+                .id(updatedCartItem.getCart().getId())
+                .build())
+            .product(CartItemProductDTO.builder()
+                .id(updatedCartItem.getProduct().getId())
+                .build())
+            .build();
     }
 
     @Override
@@ -92,22 +128,44 @@ public class CartItemServiceImpl implements CartItemService {
     }
 
     @Override
-    public List<CartItem> handleGetCartItemsByCartId(Long cartId) {
+    public List<CartItemResponseDTO> handleGetCartItemsByCartId(Long cartId) {
         Cart currentCart = this.cartRepository.findByIdAndDeletedAtIsNull(cartId).orElseThrow(() -> 
         new NoSuchElementException("Cart not found"));
 
-        return this.cartItemRepository.findByCartAndDeletedAtIsNull(currentCart);
+        return this.cartItemRepository.findByCartAndDeletedAtIsNull(currentCart).stream().map(cartItem -> CartItemResponseDTO.builder()
+            .id(cartItem.getId())
+            .quantity(cartItem.getQuantity())
+            .price_at_time(cartItem.getPrice_at_time())
+            .cart(CartItemCartDTO.builder()
+                .id(cartItem.getCart().getId())
+                .build())
+            .product(CartItemProductDTO.builder()
+                .id(cartItem.getProduct().getId())
+                .build())
+            .build()).toList();
     }
 
     @Override
-    public CartItem handleGetCartItemsByCartIdAndProductId(Long cartId, Long productId) {
+    public CartItemResponseDTO handleGetCartItemsByCartIdAndProductId(Long cartId, Long productId) {
         Cart currentCart = this.cartRepository.findByIdAndDeletedAtIsNull(cartId).orElseThrow(() -> 
         new NoSuchElementException("Cart not found"));
 
         Product currentProduct = this.productRepository.findByIdAndDeletedAtIsNull(productId).orElseThrow(() -> 
         new NoSuchElementException("Product not found"));
 
-        return this.cartItemRepository.findByProductAndCartAndDeletedAtIsNull(currentProduct, currentCart);
+        CartItem currentCartItem = this.cartItemRepository.findByProductAndCartAndDeletedAtIsNull(currentProduct, currentCart);
+        
+        return CartItemResponseDTO.builder()
+            .id(currentCartItem.getId())
+            .quantity(currentCartItem.getQuantity())
+            .price_at_time(currentCartItem.getPrice_at_time())
+            .cart(CartItemCartDTO.builder()
+                .id(currentCartItem.getCart().getId())
+                .build())
+            .product(CartItemProductDTO.builder()
+                .id(currentCartItem.getProduct().getId())
+                .build())
+            .build();
     }
 
     

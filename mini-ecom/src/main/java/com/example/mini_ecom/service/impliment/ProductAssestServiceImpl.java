@@ -6,6 +6,8 @@ import java.util.NoSuchElementException;
 
 import org.springframework.stereotype.Service;
 
+import com.example.mini_ecom.dto.product_assest.ProductAssestProduct;
+import com.example.mini_ecom.dto.product_assest.ProductAssestResponseDTO;
 import com.example.mini_ecom.model.Product;
 import com.example.mini_ecom.model.ProductAssest;
 import com.example.mini_ecom.repository.ProductAssestRepository;
@@ -25,21 +27,37 @@ public class ProductAssestServiceImpl implements ProductAssestService {
     }
 
     @Override
-    public ProductAssest handleCreateProductAssest(ProductAssest newProductAssest) {
+    public ProductAssestResponseDTO handleCreateProductAssest(ProductAssest newProductAssest) {
         if (newProductAssest.getProduct().getId() == null) {
             throw new IllegalArgumentException("Product is null");
         }
-        return this.productAssestRepository.save(newProductAssest);
+        ProductAssest createdProductAssest = this.productAssestRepository.save(newProductAssest);
+        return ProductAssestResponseDTO.builder()
+            .id(createdProductAssest.getId())
+            .assest_url(createdProductAssest.getAssest_url())
+            .is_main(createdProductAssest.getIs_main())
+            .product(ProductAssestProduct.builder()
+                .id(createdProductAssest.getProduct().getId())
+                .build())
+            .build();
     }
 
     @Override
-    public ProductAssest handleGetProductAssestById(Long id) {
-        return this.productAssestRepository.findById(id).orElseThrow(() -> 
+    public ProductAssestResponseDTO handleGetProductAssestById(Long id) {
+        ProductAssest currentProductAssest = this.productAssestRepository.findById(id).orElseThrow(() -> 
         new NoSuchElementException("ProductAssest not found"));
+        return ProductAssestResponseDTO.builder()
+            .id(currentProductAssest.getId())
+            .assest_url(currentProductAssest.getAssest_url())
+            .is_main(currentProductAssest.getIs_main())
+            .product(ProductAssestProduct.builder()
+                .id(currentProductAssest.getProduct().getId())
+                .build())
+            .build();
     }
 
     @Override
-    public ProductAssest handleUpdateProductAssest(Long id, ProductAssest updateProductAssest) {
+    public ProductAssestResponseDTO handleUpdateProductAssest(Long id, ProductAssest updateProductAssest) {
         ProductAssest currentProductAssest = this.productAssestRepository.findById(id).orElseThrow(() -> 
         new NoSuchElementException("ProductAssest not found"));
         
@@ -60,7 +78,15 @@ public class ProductAssestServiceImpl implements ProductAssestService {
             currentProductAssest.setAssest_url(updateProductAssest.getAssest_url());
         }
 
-        return this.productAssestRepository.save(currentProductAssest);
+        ProductAssest updatedProductAssest = this.productAssestRepository.save(currentProductAssest);
+        return ProductAssestResponseDTO.builder()
+            .id(updatedProductAssest.getId())
+            .assest_url(updatedProductAssest.getAssest_url())
+            .is_main(updatedProductAssest.getIs_main())
+            .product(ProductAssestProduct.builder()
+                .id(updatedProductAssest.getProduct().getId())
+                .build())
+            .build();
     }
 
     @Override
@@ -74,11 +100,20 @@ public class ProductAssestServiceImpl implements ProductAssestService {
     }
 
     @Override
-    public List<ProductAssest> handleGetProductAssestByProduct(Long productId) {
+    public List<ProductAssestResponseDTO> handleGetProductAssestByProduct(Long productId) {
         Product currentProduct = this.productRepository.findById(productId).orElseThrow(() -> 
             new NoSuchElementException("Product not found")
         );
-        return this.productAssestRepository.findByProductAndDeletedAtIsNull(currentProduct);
+        return this.productAssestRepository.findByProductAndDeletedAtIsNull(currentProduct).stream().map(product_assest -> {
+            return ProductAssestResponseDTO.builder()
+                .id(product_assest.getId())
+                .assest_url(product_assest.getAssest_url())
+                .is_main(product_assest.getIs_main())
+                .product(ProductAssestProduct.builder()
+                    .id(product_assest.getProduct().getId())
+                    .build())
+                .build();
+        }).toList();
     }
     
 

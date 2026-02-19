@@ -6,10 +6,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class CreateProductAssestResponseDTO {
+public class ProductAssestResponseDTO {
     private Long id;
     private String assest_url;
     private Boolean is_main;

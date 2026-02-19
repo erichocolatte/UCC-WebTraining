@@ -8,6 +8,8 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import com.example.mini_ecom.dto.order.OrderResponseDTO;
+import com.example.mini_ecom.dto.order.OrderUserDTO;
 import com.example.mini_ecom.model.Cart;
 import com.example.mini_ecom.model.Order;
 import com.example.mini_ecom.model.User;
@@ -38,7 +40,7 @@ public class OrderServiceImpl implements OrderService{
     @Override
     @Transactional
     // @PreAuthorize("hasRole('USER')")
-    public Order handleCreateOrder(Order newOrder) {
+    public OrderResponseDTO handleCreateOrder(Order newOrder) {
         if (newOrder.getUser() == null) {
             throw new IllegalArgumentException("User is required");
         }
@@ -66,12 +68,21 @@ public class OrderServiceImpl implements OrderService{
             .build();
         this.cartRepository.save(newCart);
 
-        return this.orderRepository.save(newOrder);
+        Order createdOrder = this.orderRepository.save(newOrder);
+        return OrderResponseDTO.builder()
+            .id(createdOrder.getId())
+            .total_price(createdOrder.getTotal_price())
+            .status(createdOrder.getStatus())
+            .user(OrderUserDTO.builder()
+                .id(createdOrder.getUser().getId())
+                .build()
+            )
+            .build();
     }
 
     @Override
     // @PreAuthorize("hasRole('USER')")
-    public Order handleGetOrderById(Long id) {
+    public OrderResponseDTO handleGetOrderById(Long id) {
         Order currentOrder = this.orderRepository.findByIdAndDeletedAtIsNull(id).orElseThrow(() -> 
         new NoSuchElementException("Order not found"));
 
@@ -82,12 +93,20 @@ public class OrderServiceImpl implements OrderService{
             throw new AccessDeniedException("Permission denied");
         }
 
-        return currentOrder;
+        return OrderResponseDTO.builder()
+            .id(currentOrder.getId())
+            .total_price(currentOrder.getTotal_price())
+            .status(currentOrder.getStatus())
+            .user(OrderUserDTO.builder()
+                .id(currentOrder.getUser().getId())
+                .build()
+            )
+            .build();
     }
 
     @Override
     // @PreAuthorize("hasRole('USER')")
-    public Order handleUpdateOrder(Long id, Order updateOrder) {
+    public OrderResponseDTO handleUpdateOrder(Long id, Order updateOrder) {
         Order currentOrder = this.orderRepository.findByIdAndDeletedAtIsNull(id).orElseThrow(() -> 
         new NoSuchElementException("Order not found"));
         
@@ -114,7 +133,16 @@ public class OrderServiceImpl implements OrderService{
             currentOrder.setStatus(updateOrder.getStatus());
         }
 
-        return this.orderRepository.save(currentOrder);
+        Order updatedOrder = this.orderRepository.save(currentOrder);
+        return OrderResponseDTO.builder()
+            .id(updatedOrder.getId())
+            .total_price(updatedOrder.getTotal_price())
+            .status(updatedOrder.getStatus())
+            .user(OrderUserDTO.builder()
+                .id(updatedOrder.getUser().getId())
+                .build()
+            )
+            .build();
     }
 
     @Override
@@ -142,7 +170,7 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     // @PreAuthorize("hasRole('USER')")
-    public List<Order> handleGetAllOrdersByUserId(Long userId) {
+    public List<OrderResponseDTO> handleGetAllOrdersByUserId(Long userId) {
         User currentUser = this.userRepository.findByIdAndDeletedAtIsNull(userId).orElseThrow(() -> 
         new NoSuchElementException("User not found"));
 
@@ -153,7 +181,17 @@ public class OrderServiceImpl implements OrderService{
             throw new AccessDeniedException("Permission denied");
         }
 
-        return this.orderRepository.findByUserAndDeletedAtIsNull(currentUser);
+        return this.orderRepository.findByUserAndDeletedAtIsNull(currentUser).stream().map(order -> 
+            OrderResponseDTO.builder()
+                .id(order.getId())
+                .total_price(order.getTotal_price())
+                .status(order.getStatus())
+                .user(OrderUserDTO.builder()
+                    .id(order.getUser().getId())
+                    .build()
+                )
+                .build()
+        ).toList();
     }
 
 

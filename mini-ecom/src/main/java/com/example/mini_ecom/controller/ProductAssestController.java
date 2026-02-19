@@ -14,10 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.mini_ecom.dto.ApiResponseDTO;
-import com.example.mini_ecom.dto.product_assest.CreateProductAssestResponseDTO;
-import com.example.mini_ecom.dto.product_assest.GetProductAssestResponseDTO;
 import com.example.mini_ecom.dto.product_assest.ProductAssestProduct;
-import com.example.mini_ecom.dto.product_assest.UpdateProductAssestResponseDTO;
 import com.example.mini_ecom.model.ProductAssest;
 import com.example.mini_ecom.service.ProductAssestService;
 
@@ -36,24 +33,13 @@ public class ProductAssestController {
     public ResponseEntity<ApiResponseDTO<?>> getAllProductAssests(
         @PathVariable("productid") Long productId
     ) {
-        List<GetProductAssestResponseDTO> listProductAssests = this.productAssestService.handleGetProductAssestByProduct(productId).stream().map(product_assest -> {
-            return GetProductAssestResponseDTO.builder()
-                .id(product_assest.getId())
-                .assest_url(product_assest.getAssest_url())
-                .is_main(product_assest.getIs_main())
-                .product(ProductAssestProduct.builder()
-                    .id(product_assest.getProduct().getId())
-                    .build())
-                .build();
-        }).toList();
-        
         return ResponseEntity.ok(ApiResponseDTO.builder()
         .status(ApiResponseDTO.ResponseStatusDTO.builder()
             .statusCode(HttpStatus.OK)
             .message("Get all product assests successfully")
             .build()
         )
-        .data(listProductAssests)
+        .data(this.productAssestService.handleGetProductAssestByProduct(productId))
         .timeStamp(Instant.now())
         .build());
     }
@@ -62,21 +48,13 @@ public class ProductAssestController {
     public ResponseEntity<ApiResponseDTO<?>> createProductAssest(
         @Valid @RequestBody ProductAssest newProductAssest
     ) {
-        ProductAssest createdProductAssest = this.productAssestService.handleCreateProductAssest(newProductAssest);
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponseDTO.builder()
             .status(ApiResponseDTO.ResponseStatusDTO.builder()
                 .statusCode(HttpStatus.CREATED)
                 .message("Create product assest successfully")
                 .build()
             )
-            .data(CreateProductAssestResponseDTO.builder()
-                .id(createdProductAssest.getId())
-                .assest_url(createdProductAssest.getAssest_url())
-                .is_main(createdProductAssest.getIs_main())
-                .product(ProductAssestProduct.builder()
-                    .id(createdProductAssest.getProduct().getId())
-                    .build())
-                .build())
+            .data(this.productAssestService.handleCreateProductAssest(newProductAssest))
             .timeStamp(Instant.now())
             .build());
     }
@@ -86,21 +64,13 @@ public class ProductAssestController {
         @PathVariable("id") Long id,
         @RequestBody ProductAssest updateProductAssest
     ) {
-        ProductAssest updatedProductAssest = this.productAssestService.handleUpdateProductAssest(id, updateProductAssest);
         return ResponseEntity.ok(ApiResponseDTO.builder()
             .status(ApiResponseDTO.ResponseStatusDTO.builder()
                 .statusCode(HttpStatus.OK)
                 .message("Update product assest successfully")
                 .build()
             )
-            .data(UpdateProductAssestResponseDTO.builder()
-                .id(updatedProductAssest.getId())
-                .assest_url(updatedProductAssest.getAssest_url())
-                .is_main(updatedProductAssest.getIs_main())
-                .product(ProductAssestProduct.builder()
-                    .id(updatedProductAssest.getProduct().getId())
-                    .build())
-                .build())
+            .data(this.productAssestService.handleUpdateProductAssest(id, updateProductAssest))
             .timeStamp(Instant.now())
             .build());
     }

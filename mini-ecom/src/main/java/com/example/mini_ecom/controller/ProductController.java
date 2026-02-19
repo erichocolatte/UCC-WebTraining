@@ -3,9 +3,9 @@ package com.example.mini_ecom.controller;
 import java.time.Instant;
 import java.util.List;
 
-import com.example.mini_ecom.dto.product_assest.GetProductAssestResponseDTO;
-
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -23,10 +23,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.mini_ecom.dto.ApiResponseDTO;
 import com.example.mini_ecom.dto.PaginationResponseDTO;
 import com.example.mini_ecom.dto.PaginationResponseDTO.MetaDTO;
-import com.example.mini_ecom.dto.product.CreateProductResponseDTO;
-import com.example.mini_ecom.dto.product.GetProductResponseDTO;
+import com.example.mini_ecom.dto.product.ProductAssestDTO;
 import com.example.mini_ecom.dto.product.ProductCategorieDTO;
-import com.example.mini_ecom.dto.product.UpdateProductResponseDTO;
+import com.example.mini_ecom.dto.product.ProductResponseDTO;
 import com.example.mini_ecom.model.Product;
 import com.example.mini_ecom.service.ProductService;
 
@@ -49,44 +48,13 @@ public class ProductController {
         @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC)
         Pageable productPageable
     ) {
-        Page<Product> currentPage = this.productService.handleGetAllProducts(productPageable);
-        
-        List<GetProductResponseDTO> listGetProductResponseDTO = currentPage.getContent().stream().map(product -> {
-            return GetProductResponseDTO.builder()
-            .id(product.getId())
-            .categorie(ProductCategorieDTO.builder()
-                // .name(product.getCategorie().getName())
-                .id(product.getCategorie().getId())
-                .build())
-            .name(product.getName())
-            .description(product.getDescription())
-            .price(product.getPrice())
-            .assets(product.getProductAssets() != null ? product.getProductAssets().stream().map(asset -> GetProductAssestResponseDTO.builder()
-                .id(asset.getId())
-                .assest_url(asset.getAssest_url())
-                .is_main(asset.getIs_main())
-                .build()).toList() : null)
-            .build();
-        }).toList();
-
-        PaginationResponseDTO<GetProductResponseDTO,MetaDTO> paginationResponseDTO = PaginationResponseDTO.<GetProductResponseDTO,MetaDTO>builder()
-            .result(listGetProductResponseDTO)
-            .meta(MetaDTO.builder()
-                .page(currentPage.getNumber())
-                .pageSize(currentPage.getSize())
-                .pages(currentPage.getTotalPages())
-                .total(currentPage.getTotalElements())
-                .build()
-            )
-            .build();
-
         return ResponseEntity.ok(ApiResponseDTO.builder()
         .status(ApiResponseDTO.ResponseStatusDTO.builder()
             .statusCode(HttpStatus.OK)
             .message("Get all products successfully")
             .build()
         )
-        .data(paginationResponseDTO)
+        .data(this.productService.handleGetAllProducts(productPageable))
         .timeStamp(Instant.now())
         .build());
     }
@@ -95,24 +63,13 @@ public class ProductController {
     public ResponseEntity<ApiResponseDTO<?>> createProduct(
         @Valid @RequestBody Product newProduct
     ) {
-        Product createdProduct = this.productService.handleCreateProduct(newProduct);
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponseDTO.builder()
         .status(ApiResponseDTO.ResponseStatusDTO.builder()
             .statusCode(HttpStatus.CREATED)
             .message("Create product successfully")
             .build()
         )
-        .data(CreateProductResponseDTO.builder()
-            .id(createdProduct.getId())
-            .name(createdProduct.getName())
-            .description(createdProduct.getDescription())
-            .price(createdProduct.getPrice())
-            .stock(createdProduct.getStock())
-            .categorie(ProductCategorieDTO.builder()
-                .id(createdProduct.getCategorie().getId())
-                .name(createdProduct.getCategorie().getName())
-                .build())
-            .build())
+        .data(this.productService.handleCreateProduct(newProduct))
         .timeStamp(Instant.now())
         .build());
     }
@@ -121,29 +78,13 @@ public class ProductController {
     public ResponseEntity<ApiResponseDTO<?>> getProductById(
         @PathVariable Long id
     ) {
-        Product currnetProduct = this.productService.handleGetProductById(id);
         return ResponseEntity.ok(ApiResponseDTO.builder()
         .status(ApiResponseDTO.ResponseStatusDTO.builder()
             .statusCode(HttpStatus.OK)
             .message("Get product successfully")
             .build()
         )
-        .data(GetProductResponseDTO.builder()
-            .id(currnetProduct.getId())
-            .name(currnetProduct.getName())
-            .description(currnetProduct.getDescription())
-            .price(currnetProduct.getPrice())
-            .stock(currnetProduct.getStock())
-            .categorie(ProductCategorieDTO.builder()
-                .name(currnetProduct.getCategorie().getName())
-                .id(currnetProduct.getCategorie().getId())
-                .build())
-            .assets(currnetProduct.getProductAssets() != null ? currnetProduct.getProductAssets().stream().map(asset -> GetProductAssestResponseDTO.builder()
-                .id(asset.getId())
-                .assest_url(asset.getAssest_url())
-                .is_main(asset.getIs_main())
-                .build()).toList() : null)
-            .build())
+        .data(this.productService.handleGetProductById(id))
         .timeStamp(Instant.now())
         .build());
     }
@@ -153,24 +94,13 @@ public class ProductController {
         @PathVariable Long id,
         @RequestBody Product updateProduct
     ) {
-        Product updatedProduct = this.productService.handleUpdateProduct(id, updateProduct);
         return ResponseEntity.ok(ApiResponseDTO.builder()
         .status(ApiResponseDTO.ResponseStatusDTO.builder()
             .statusCode(HttpStatus.OK)
             .message("Update product successfully")
             .build()
         )
-        .data(UpdateProductResponseDTO.builder()
-            .id(updatedProduct.getId())
-            .name(updatedProduct.getName())
-            .description(updatedProduct.getDescription())
-            .price(updatedProduct.getPrice())
-            .stock(updatedProduct.getStock())
-            .categorie(ProductCategorieDTO.builder()
-                .name(updatedProduct.getCategorie().getName())
-                .id(updatedProduct.getCategorie().getId())
-                .build())
-            .build())
+        .data(this.productService.handleUpdateProduct(id, updateProduct))
         .timeStamp(Instant.now())
         .build());
     }
@@ -197,45 +127,13 @@ public class ProductController {
         @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC)
         Pageable productPageable
     ) {
-        // Product product = this.productService.handleGetProductById(id);
-        Page<Product> currentPage = this.productService.handleGetAllProductsByCategory(categoryId, productPageable);
-
-        List<GetProductResponseDTO> listGetProductResponseDTO = currentPage.getContent().stream().map(product -> {
-            return GetProductResponseDTO.builder()
-            .id(product.getId())
-            .categorie(ProductCategorieDTO.builder()
-                .name(product.getCategorie().getName())
-                .id(product.getCategorie().getId())
-                .build())
-            .name(product.getName())
-            .description(product.getDescription())
-            .price(product.getPrice())
-            .assets(product.getProductAssets() != null ? product.getProductAssets().stream().map(asset -> GetProductAssestResponseDTO.builder()
-                .id(asset.getId())
-                .assest_url(asset.getAssest_url())
-                .is_main(asset.getIs_main())
-                .build()).toList() : null)
-            .build();
-        }).toList();
-
-        PaginationResponseDTO<GetProductResponseDTO,MetaDTO> paginationResponseDTO = PaginationResponseDTO.<GetProductResponseDTO,MetaDTO>builder()
-            .result(listGetProductResponseDTO)
-            .meta(MetaDTO.builder()
-                .page(currentPage.getNumber())
-                .pageSize(currentPage.getSize())
-                .pages(currentPage.getTotalPages())
-                .total(currentPage.getTotalElements())
-                .build()
-            )
-            .build();
-
         return ResponseEntity.ok(ApiResponseDTO.builder()
         .status(ApiResponseDTO.ResponseStatusDTO.builder()
             .statusCode(HttpStatus.OK)
             .message("Get product by categorie successfully")
             .build()
         )
-        .data(paginationResponseDTO)
+        .data(this.productService.handleGetAllProductsByCategory(categoryId, productPageable))
         .timeStamp(Instant.now())
         .build());
     }

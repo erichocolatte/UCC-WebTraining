@@ -33,25 +33,13 @@ public class CartItemController {
     public ResponseEntity<ApiResponseDTO<?>> getCartItemsByCartId(
         @PathVariable Long cartId
     ) {
-        List<CartItem> listCartItem = this.cartItemService.handleGetCartItemsByCartId(cartId);
-        
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponseDTO.builder()
             .status(ApiResponseDTO.ResponseStatusDTO.builder()
                 .statusCode(HttpStatus.OK)
                 .message("Get cart items by cart id sucessfully")
                 .build()
             )
-            .data(listCartItem.stream().map(cartItem -> CartItemResponseDTO.builder()
-                .id(cartItem.getId())
-                .quantity(cartItem.getQuantity())
-                .price_at_time(cartItem.getPrice_at_time())
-                .cart(CartItemCartDTO.builder()
-                    .id(cartItem.getCart().getId())
-                    .build())
-                .product(CartItemProductDTO.builder()
-                    .id(cartItem.getProduct().getId())
-                    .build())
-                .build()).toList())
+            .data(this.cartItemService.handleGetCartItemsByCartId(cartId))
             .build()
         );
     }
@@ -60,25 +48,13 @@ public class CartItemController {
     private ResponseEntity<ApiResponseDTO<?>> createCartItem(
         @RequestBody CartItem newCartItem
     ) {
-       CartItem createdCartItem = this.cartItemService.handleCreateCartItem(newCartItem);
-       
        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponseDTO.builder()
             .status(ApiResponseDTO.ResponseStatusDTO.builder()
                 .statusCode(HttpStatus.CREATED)
                 .message("Create cart item sucessfully")
                 .build()
             )
-            .data(CartItemResponseDTO.builder()
-                .id(createdCartItem.getId())
-                .quantity(createdCartItem.getQuantity())
-                .price_at_time(createdCartItem.getPrice_at_time())
-                .cart(CartItemCartDTO.builder()
-                    .id(createdCartItem.getCart().getId())
-                    .build())
-                .product(CartItemProductDTO.builder()
-                    .id(createdCartItem.getProduct().getId())
-                    .build())
-                .build())
+            .data(this.cartItemService.handleCreateCartItem(newCartItem))
             .build()
         );
     }
@@ -88,25 +64,13 @@ public class CartItemController {
         @PathVariable Long id,
         @RequestBody CartItem updateCartItem
     ) {
-        CartItem updatedCartItem = this.cartItemService.handleUpdateCartItem(id, updateCartItem);
-        
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponseDTO.builder()
             .status(ApiResponseDTO.ResponseStatusDTO.builder()
                 .statusCode(HttpStatus.OK)
                 .message("Update cart item sucessfully")
                 .build()
             )
-            .data(CartItemResponseDTO.builder()
-                .id(updatedCartItem.getId())
-                .quantity(updatedCartItem.getQuantity())
-                .price_at_time(updatedCartItem.getPrice_at_time())
-                .cart(CartItemCartDTO.builder()
-                    .id(updatedCartItem.getCart().getId())
-                    .build())
-                .product(CartItemProductDTO.builder()
-                    .id(updatedCartItem.getProduct().getId())
-                    .build())
-                .build())
+            .data(this.cartItemService.handleUpdateCartItem(id, updateCartItem))
             .build()
         );
     }

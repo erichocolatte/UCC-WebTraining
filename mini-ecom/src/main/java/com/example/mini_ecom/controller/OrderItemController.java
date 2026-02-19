@@ -35,25 +35,13 @@ public class OrderItemController {
     public ResponseEntity<ApiResponseDTO<?>> createOrderItem(
         @Valid @RequestBody OrderItem newOrderItem
     ) {
-        OrderItem createdOrderItem = this.orderItemService.handleCreateOrderItem(newOrderItem);
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponseDTO.builder()
             .status(ApiResponseDTO.ResponseStatusDTO.builder()
                 .statusCode(HttpStatus.CREATED)
                 .message("Order item created successfully")
                 .build()
             )
-            .data(OrderItemResponseDTO.builder()
-                .id(createdOrderItem.getId())
-                .order(OrderItemOrder.builder()
-                    .id(createdOrderItem.getOrder().getId())
-                    .build())
-                .product(OrderItemProduct.builder()
-                    .id(createdOrderItem.getProduct().getId())
-                    .name(createdOrderItem.getProduct().getName())
-                    .build())
-                .quantity(createdOrderItem.getQuantity())
-                .price(createdOrderItem.getPrice())
-                .build())
+            .data(this.orderItemService.handleCreateOrderItem(newOrderItem))
             .build()
         );
     }
@@ -62,25 +50,13 @@ public class OrderItemController {
     public ResponseEntity<ApiResponseDTO<?>> getOrderItemById(
         @PathVariable Long id
     ) {
-        OrderItem orderItem = this.orderItemService.handleGetOrderItemById(id);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponseDTO.builder()
             .status(ApiResponseDTO.ResponseStatusDTO.builder()
                 .statusCode(HttpStatus.OK)
                 .message("Order item fetched successfully")
                 .build()
             )
-            .data(OrderItemResponseDTO.builder()
-                .id(orderItem.getId())
-                .order(OrderItemOrder.builder()
-                    .id(orderItem.getOrder().getId())
-                    .build())
-                .product(OrderItemProduct.builder()
-                    .id(orderItem.getProduct().getId())
-                    .name(orderItem.getProduct().getName())
-                    .build())
-                .quantity(orderItem.getQuantity())
-                .price(orderItem.getPrice())
-                .build())
+            .data(this.orderItemService.handleGetOrderItemById(id))
             .build()
         );
     }
@@ -90,25 +66,13 @@ public class OrderItemController {
         @PathVariable Long id,
         @Valid @RequestBody OrderItem updateOrderItem
     ) {
-        OrderItem updatedOrderItem = this.orderItemService.handleUpdateOrderItem(id, updateOrderItem);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponseDTO.builder()
             .status(ApiResponseDTO.ResponseStatusDTO.builder()
                 .statusCode(HttpStatus.OK)
                 .message("Order item updated successfully")
                 .build()
             )
-            .data(OrderItemResponseDTO.builder()
-                .id(updatedOrderItem.getId())
-                .order(OrderItemOrder.builder()
-                    .id(updatedOrderItem.getOrder().getId())
-                    .build())
-                .product(OrderItemProduct.builder()
-                    .id(updatedOrderItem.getProduct().getId())
-                    .name(updatedOrderItem.getProduct().getName())
-                    .build())
-                .quantity(updatedOrderItem.getQuantity())
-                .price(updatedOrderItem.getPrice())
-                .build())
+            .data(this.orderItemService.handleUpdateOrderItem(id, updateOrderItem))
             .build()
         );
     }
@@ -132,26 +96,13 @@ public class OrderItemController {
     public ResponseEntity<ApiResponseDTO<?>> getOrderItemsByOrderId(
         @PathVariable Long orderId
     ) {
-        List<OrderItem> orderItems = this.orderItemService.handleGetAllOrdersByOrderId(orderId);
-        List<OrderItemResponseDTO> orderItemResponseDTOs = orderItems.stream().map(orderItem -> OrderItemResponseDTO.builder()
-            .id(orderItem.getId())
-            .order(OrderItemOrder.builder()
-                .id(orderItem.getOrder().getId())
-                .build())
-            .product(OrderItemProduct.builder()
-                .id(orderItem.getProduct().getId())
-                .name(orderItem.getProduct().getName())
-                .build())
-            .quantity(orderItem.getQuantity())
-            .price(orderItem.getPrice())
-            .build()).toList();
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponseDTO.builder()
             .status(ApiResponseDTO.ResponseStatusDTO.builder()
                 .statusCode(HttpStatus.OK)
                 .message("Order items fetched successfully")
                 .build()
             )
-            .data(orderItemResponseDTOs)
+            .data(this.orderItemService.handleGetAllOrdersByOrderId(orderId))
             .build()
         );
     }

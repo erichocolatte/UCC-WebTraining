@@ -22,8 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.mini_ecom.dto.ApiResponseDTO;
 import com.example.mini_ecom.dto.PaginationResponseDTO;
 import com.example.mini_ecom.dto.PaginationResponseDTO.MetaDTO;
-import com.example.mini_ecom.dto.categorie.CreateCategorieResponseDTO;
-import com.example.mini_ecom.dto.categorie.GetCategorieResponseDTO;
 import com.example.mini_ecom.model.Categorie;
 import com.example.mini_ecom.service.CategorieService;
 
@@ -46,31 +44,12 @@ public class CategorieController {
         @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC)
         Pageable categoriePageable
     ) {
-        Page<Categorie> currentPage = this.categorieService.handleGetAllCategories(categoriePageable);  
-        List<GetCategorieResponseDTO> listCategorieResponseDTO = currentPage.getContent().stream().map(categorie -> {
-            return GetCategorieResponseDTO.builder()
-                .id(categorie.getId())
-                .name(categorie.getName())
-                .build();   
-        }).toList();
-
-        PaginationResponseDTO<GetCategorieResponseDTO, MetaDTO> paginationResponseDTO = PaginationResponseDTO.<GetCategorieResponseDTO, MetaDTO>builder()
-        .result(listCategorieResponseDTO)
-        .meta(MetaDTO.builder()
-            .page(currentPage.getNumber())
-            .pageSize(currentPage.getSize())
-            .pages(currentPage.getTotalPages())
-            .total(currentPage.getTotalElements())
-            .build()
-        )
-        .build();
-
         return ResponseEntity.ok(ApiResponseDTO.builder()
         .status(ApiResponseDTO.ResponseStatusDTO.builder()
             .statusCode(HttpStatus.OK)
             .message("Get all categories successfully")
             .build())
-        .data(paginationResponseDTO)
+        .data(this.categorieService.handleGetAllCategories(categoriePageable))
         .timeStamp(Instant.now())
         .build());
 
@@ -80,16 +59,12 @@ public class CategorieController {
     public ResponseEntity<ApiResponseDTO<?>> createCategorie(
         @Valid @RequestBody Categorie newCategorie
     ) {
-        Categorie createdCategorie = this.categorieService.handleCreateCategorie(newCategorie);
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponseDTO.builder()
         .status(ApiResponseDTO.ResponseStatusDTO.builder()
             .statusCode(HttpStatus.CREATED)
             .message("Create categorie successfully")
             .build())
-        .data(CreateCategorieResponseDTO.builder()
-            .id(createdCategorie.getId())
-            .name(createdCategorie.getName())
-            .build())
+        .data(this.categorieService.handleCreateCategorie(newCategorie))
         .timeStamp(Instant.now())
         .build());
     }

@@ -5,6 +5,9 @@ import java.util.NoSuchElementException;
 
 import org.springframework.stereotype.Service;
 
+import com.example.mini_ecom.dto.order_item.OrderItemOrder;
+import com.example.mini_ecom.dto.order_item.OrderItemProduct;
+import com.example.mini_ecom.dto.order_item.OrderItemResponseDTO;
 import com.example.mini_ecom.model.Order;
 import com.example.mini_ecom.model.OrderItem;
 import com.example.mini_ecom.repository.OrderItemRepository;
@@ -25,7 +28,7 @@ public class OrderItemServiceImpl implements OrderItemService {
     }
 
     @Override
-    public OrderItem handleCreateOrderItem(OrderItem newOrderItem) {
+    public OrderItemResponseDTO handleCreateOrderItem(OrderItem newOrderItem) {
         if (newOrderItem.getOrder() == null) {
             throw new IllegalArgumentException("Order is required");
         } else {
@@ -48,17 +51,41 @@ public class OrderItemServiceImpl implements OrderItemService {
             throw new IllegalArgumentException("Price is required");
         }
 
-        return this.orderItemRepository.save(newOrderItem);
+        OrderItem createdOrderItem = this.orderItemRepository.save(newOrderItem);
+        return OrderItemResponseDTO.builder()
+            .id(createdOrderItem.getId())
+            .order(OrderItemOrder.builder()
+                .id(createdOrderItem.getOrder().getId())
+                .build())
+            .product(OrderItemProduct.builder()
+                .id(createdOrderItem.getProduct().getId())
+                .name(createdOrderItem.getProduct().getName())
+                .build())
+            .quantity(createdOrderItem.getQuantity())
+            .price(createdOrderItem.getPrice())
+            .build();
     }
 
     @Override
-    public OrderItem handleGetOrderItemById(Long id) {
-        return this.orderItemRepository.findByIdAndDeletedAtIsNull(id).orElseThrow(() -> 
+    public OrderItemResponseDTO handleGetOrderItemById(Long id) {
+        OrderItem currentOrderItem = this.orderItemRepository.findByIdAndDeletedAtIsNull(id).orElseThrow(() -> 
         new NoSuchElementException("Order item not found"));
+        return OrderItemResponseDTO.builder()
+            .id(currentOrderItem.getId())
+            .order(OrderItemOrder.builder()
+                .id(currentOrderItem.getOrder().getId())
+                .build())
+            .product(OrderItemProduct.builder()
+                .id(currentOrderItem.getProduct().getId())
+                .name(currentOrderItem.getProduct().getName())
+                .build())
+            .quantity(currentOrderItem.getQuantity())
+            .price(currentOrderItem.getPrice())
+            .build();
     }
 
     @Override
-    public OrderItem handleUpdateOrderItem(Long id, OrderItem updateOrderItem) {
+    public OrderItemResponseDTO handleUpdateOrderItem(Long id, OrderItem updateOrderItem) {
         OrderItem currnetOrderItem = this.orderItemRepository.findByIdAndDeletedAtIsNull(id).orElseThrow(() -> 
         new NoSuchElementException("Order item not found"));
 
@@ -82,7 +109,19 @@ public class OrderItemServiceImpl implements OrderItemService {
             currnetOrderItem.setPrice(updateOrderItem.getPrice());
         }
 
-        return this.orderItemRepository.save(currnetOrderItem);
+        OrderItem updatedOrderItem = this.orderItemRepository.save(currnetOrderItem);
+        return OrderItemResponseDTO.builder()
+            .id(updatedOrderItem.getId())
+            .order(OrderItemOrder.builder()
+                .id(updatedOrderItem.getOrder().getId())
+                .build())
+            .product(OrderItemProduct.builder()
+                .id(updatedOrderItem.getProduct().getId())
+                .name(updatedOrderItem.getProduct().getName())
+                .build())
+            .quantity(updatedOrderItem.getQuantity())
+            .price(updatedOrderItem.getPrice())
+            .build();
 
     }
 
@@ -93,11 +132,22 @@ public class OrderItemServiceImpl implements OrderItemService {
         this.orderItemRepository.delete(currentOrderItem);
     }
 
-    public List<OrderItem> handleGetAllOrdersByOrderId(Long orderId) {
+    public List<OrderItemResponseDTO> handleGetAllOrdersByOrderId(Long orderId) {
         Order currentOrder = this.orderRepository.findByIdAndDeletedAtIsNull(orderId).orElseThrow(() -> 
         new NoSuchElementException("Order not found"));
 
-        return this.orderItemRepository.findByOrderAndDeletedAtIsNull(currentOrder);
+        return this.orderItemRepository.findByOrderAndDeletedAtIsNull(currentOrder).stream().map(orderItem -> OrderItemResponseDTO.builder()
+            .id(orderItem.getId())
+            .order(OrderItemOrder.builder()
+                .id(orderItem.getOrder().getId())
+                .build())
+            .product(OrderItemProduct.builder()
+                .id(orderItem.getProduct().getId())
+                .name(orderItem.getProduct().getName())
+                .build())
+            .quantity(orderItem.getQuantity())
+            .price(orderItem.getPrice())
+            .build()).toList();
     }
 
 

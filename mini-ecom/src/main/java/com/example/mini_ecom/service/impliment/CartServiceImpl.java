@@ -8,6 +8,8 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import com.example.mini_ecom.dto.cart.CartResponseDTO;
+import com.example.mini_ecom.dto.cart.CartUserDTO;
 import com.example.mini_ecom.model.Cart;
 import com.example.mini_ecom.model.User;
 import com.example.mini_ecom.repository.CartItemRepository;
@@ -33,8 +35,7 @@ public class CartServiceImpl implements CartService {
 
     @Override
     // @PreAuthorize("hasRole('USER')")
-    public Cart handleCreateCart(Cart newCart) {
-        System.out.println(newCart.getUser().getId().toString());
+    public CartResponseDTO handleCreateCart(Cart newCart) {
         if (newCart.getUser() == null) {
             throw new IllegalArgumentException("User is required");
         }
@@ -58,12 +59,19 @@ public class CartServiceImpl implements CartService {
                 });
         }
 
-        return this.cartRepository.save(newCart);
+        Cart createdCart = this.cartRepository.save(newCart);
+        return CartResponseDTO.builder()
+            .id(createdCart.getId())
+            .status(createdCart.getStatus())
+            .user(CartUserDTO.builder()
+                .id(createdCart.getUser().getId())
+                .build())
+            .build();
     }
 
     @Override
     // @PreAuthorize("hasRole('USER')")
-    public Cart handleGetCartById(Long id) {
+    public CartResponseDTO handleGetCartById(Long id) {
         Cart currentCart = this.cartRepository.findByIdAndDeletedAtIsNull(id).orElseThrow(() -> 
         new NoSuchElementException("Cart not found"));
 
@@ -74,12 +82,18 @@ public class CartServiceImpl implements CartService {
             throw new AccessDeniedException("Permission denied");
         }
 
-        return currentCart;
+        return CartResponseDTO.builder()
+            .id(currentCart.getId())
+            .status(currentCart.getStatus())
+            .user(CartUserDTO.builder()
+                .id(currentCart.getUser().getId())
+                .build())
+            .build();
     }
 
     @Override
     // @PreAuthorize("hasRole('USER')")
-    public Cart handleUpdateCart(Long id, Cart updateCart) {
+    public CartResponseDTO handleUpdateCart(Long id, Cart updateCart) {
         Cart currentCart = this.cartRepository.findByIdAndDeletedAtIsNull(id).orElseThrow(() -> 
         new NoSuchElementException("Cart not found"));
 
@@ -97,6 +111,7 @@ public class CartServiceImpl implements CartService {
             currentCart.getUser().setId(updateCart.getUser().getId());
         }
 
+        // Create new cart if not exist any ACTIVE cart
         if (updateCart.getStatus() != null) {
             if (updateCart.getStatus() == CartStatusEnum.ACTIVE && currentCart.getStatus() != CartStatusEnum.ACTIVE) {
                  this.cartRepository.findByUserAndStatusAndDeletedAtIsNull(currentCart.getUser(), CartStatusEnum.ACTIVE)
@@ -108,7 +123,14 @@ public class CartServiceImpl implements CartService {
             currentCart.setStatus(updateCart.getStatus());
         }
 
-        return this.cartRepository.save(currentCart);
+        Cart updatedCart = this.cartRepository.save(currentCart);
+        return CartResponseDTO.builder()
+            .id(updatedCart.getId())
+            .status(updatedCart.getStatus())
+            .user(CartUserDTO.builder()
+                .id(updatedCart.getUser().getId())
+                .build())
+            .build();
     }
 
     @Override
@@ -137,7 +159,7 @@ public class CartServiceImpl implements CartService {
 
     @Override
     // @PreAuthorize("hasRole('USER')")
-    public List<Cart> handleGetAllCartsByUserId(Long userId) {
+    public List<CartResponseDTO> handleGetAllCartsByUserId(Long userId) {
         User currentUser = this.userRepository.findByIdAndDeletedAtIsNull(userId).orElseThrow(() -> 
         new NoSuchElementException("User not found"));
 
@@ -149,11 +171,19 @@ public class CartServiceImpl implements CartService {
             throw new AccessDeniedException("Permission denied");
         }
 
-        return this.cartRepository.findByUserAndDeletedAtIsNull(currentUser);
+        return this.cartRepository.findByUserAndDeletedAtIsNull(currentUser).stream().map(cart -> 
+            CartResponseDTO.builder()
+                .id(cart.getId())
+                .status(cart.getStatus())
+                .user(CartUserDTO.builder()
+                    .id(cart.getUser().getId())
+                    .build())
+                .build())
+            .toList();
     }
 
     @Override
-    public Cart handleGetActiveCartByUserId(Long userId) {
+    public CartResponseDTO handleGetActiveCartByUserId(Long userId) {
         User currentUser = this.userRepository.findByIdAndDeletedAtIsNull(userId).orElseThrow(() -> 
         new NoSuchElementException("User not found"));
 
@@ -164,7 +194,14 @@ public class CartServiceImpl implements CartService {
             throw new AccessDeniedException("Permission denied");
         }
 
-        return this.cartRepository.findByUserAndStatusAndDeletedAtIsNull(currentUser, CartStatusEnum.ACTIVE)
+        Cart currentCart = this.cartRepository.findByUserAndStatusAndDeletedAtIsNull(currentUser, CartStatusEnum.ACTIVE)
             .orElseThrow(() -> new NoSuchElementException("Active cart not found"));
+        return CartResponseDTO.builder()
+            .id(currentCart.getId())
+            .status(currentCart.getStatus())
+            .user(CartUserDTO.builder()
+                .id(currentCart.getUser().getId())
+                .build())
+            .build();
     }
 }

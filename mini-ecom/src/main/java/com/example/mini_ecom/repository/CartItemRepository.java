@@ -3,6 +3,8 @@ package com.example.mini_ecom.repository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -16,4 +18,7 @@ public interface CartItemRepository extends JpaRepository<CartItem, Long> {
     public CartItem findByProductAndCartAndDeletedAtIsNull(Product product, Cart cart);
     public List<CartItem> findByProductAndDeletedAtIsNull(Product product);
     public Optional<CartItem> findByIdAndDeletedAtIsNull(Long id);
+    
+    public Page<CartItem> findAllByDeletedAtIsNull(Pageable pageable);
+    
 }

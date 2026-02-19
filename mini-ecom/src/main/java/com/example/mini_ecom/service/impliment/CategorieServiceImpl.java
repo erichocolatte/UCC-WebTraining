@@ -4,11 +4,16 @@ import java.time.Instant;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.example.mini_ecom.dto.PaginationResponseDTO;
+import com.example.mini_ecom.dto.PaginationResponseDTO.MetaDTO;
+import com.example.mini_ecom.dto.categorie.CategorieResponseDTO;
 import com.example.mini_ecom.model.Categorie;
 import com.example.mini_ecom.model.Product;
 import com.example.mini_ecom.repository.CategorieRepository;
@@ -28,27 +33,43 @@ public class CategorieServiceImpl implements CategorieService{
     }
 
     @Override
-    public Categorie handleCreateCategorie(Categorie newCategorie) {
+    @CacheEvict(value = "categories")
+    public CategorieResponseDTO handleCreateCategorie(Categorie newCategorie) {
         if (this.categorieRepository.existsByNameAndDeletedAtIsNull(newCategorie.getName())) {
             throw new DuplicateKeyException("Name already exists");
         }
-        return this.categorieRepository.save(newCategorie);
+        Categorie createdCategorie = this.categorieRepository.save(newCategorie);
+        return CategorieResponseDTO.builder()
+            .id(createdCategorie.getId())
+            .name(createdCategorie.getName())
+            .build();
     }
 
     @Override
-    public Categorie handleGetCategorieById(Long id) {
-        return this.categorieRepository.findById(id).orElseThrow(() -> 
+    public CategorieResponseDTO handleGetCategorieById(Long id) {
+        Categorie currentCategorie = this.categorieRepository.findById(id).orElseThrow(() -> 
         new NoSuchElementException("Categorie not found"));
+
+        return CategorieResponseDTO.builder()
+            .id(currentCategorie.getId())
+            .name(currentCategorie.getName())
+            .build();
     }
 
     @Override
-    public Categorie handleGetCategorieByName(String name) {
-        return this.categorieRepository.findByNameAndDeletedAtIsNull(name).orElseThrow(() -> 
+    public CategorieResponseDTO handleGetCategorieByName(String name) {
+        Categorie currentCategorie = this.categorieRepository.findByNameAndDeletedAtIsNull(name).orElseThrow(() -> 
         new NoSuchElementException("Categorie not found"));
+
+        return CategorieResponseDTO.builder()
+            .id(currentCategorie.getId())
+            .name(currentCategorie.getName())
+            .build();
     }
 
     @Override
-    public Categorie handleUpdateCategorie(Long id, Categorie updateCategorie) {
+    @CacheEvict(value = "categories")
+    public CategorieResponseDTO handleUpdateCategorie(Long id, Categorie updateCategorie) {
         if (this.categorieRepository.existsByNameAndDeletedAtIsNull(updateCategorie.getName())) {
             throw new DuplicateKeyException("Name already exists");
         }
@@ -60,11 +81,16 @@ public class CategorieServiceImpl implements CategorieService{
             currnetCategorie.setName(updateCategorie.getName());
         }
 
-        return this.categorieRepository.save(currnetCategorie);
+        Categorie updatedCategorie = this.categorieRepository.save(currnetCategorie);
+        return CategorieResponseDTO.builder()
+            .id(updatedCategorie.getId())
+            .name(updatedCategorie.getName())
+            .build();
     }
 
     @Override
     @Transactional
+    @CacheEvict(value = "categories")
     public void handleDeleteCategorie(Long id) {
         Categorie currentCategorie = this.categorieRepository.findByIdAndDeletedAtIsNull(id).orElseThrow(() -> 
         new NoSuchElementException("Categorie not found"));
@@ -82,7 +108,26 @@ public class CategorieServiceImpl implements CategorieService{
     }
 
     @Override
-    public Page<Categorie> handleGetAllCategories(Pageable categoriePageable) {
-        return this.categorieRepository.findAll(categoriePageable);
+    @Cacheable(value = "categories")
+    public PaginationResponseDTO<CategorieResponseDTO, MetaDTO> handleGetAllCategories(Pageable categoriePageable) {
+        Page<Categorie> currentPage = this.categorieRepository.findAllByDeletedAtIsNull(categoriePageable);
+
+        List<CategorieResponseDTO> list = currentPage.getContent()
+        .stream().map(categorie -> 
+            CategorieResponseDTO.builder()
+            .id(categorie.getId())
+            .name(categorie.getName())
+            .build()
+        ).toList();
+
+        return PaginationResponseDTO.<CategorieResponseDTO, MetaDTO>builder()
+            .result(list)
+            .meta(MetaDTO.builder()
+                .page(currentPage.getNumber())
+                .pageSize(currentPage.getSize())
+                .pages(currentPage.getTotalPages())
+                .total(currentPage.getTotalElements())
+                .build())
+            .build();
     }   
 }

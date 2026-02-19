@@ -4,10 +4,19 @@ import java.time.Instant;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.stereotype.Service;
 
+import com.example.mini_ecom.dto.PaginationResponseDTO;
+import com.example.mini_ecom.dto.PaginationResponseDTO.MetaDTO;
+import com.example.mini_ecom.dto.product.ProductAssestDTO;
+import com.example.mini_ecom.dto.product.ProductCategorieDTO;
+import com.example.mini_ecom.dto.product.ProductResponseDTO;
 import com.example.mini_ecom.model.Categorie;
 import com.example.mini_ecom.model.Product;
 import com.example.mini_ecom.model.ProductAssest;
@@ -34,25 +43,57 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product handleCreateProduct(Product newProduct) {
+    @CacheEvict(value = "allProducts", allEntries = true)
+    public ProductResponseDTO handleCreateProduct(Product newProduct) {
         if (newProduct.getCategorie().getId() == null) {
             throw new IllegalArgumentException("Categorie id is null");
         }
+
         if (!this.categorieRepository.findById(newProduct.getCategorie().getId()).isPresent()) {
             throw new NoSuchElementException("Categorie not found");
         }
 
-        return this.productRepository.save(newProduct);   
+        Product createdProduct = this.productRepository.save(newProduct);
+
+        return ProductResponseDTO.builder()
+            .id(createdProduct.getId())
+            .name(createdProduct.getName())
+            .description(createdProduct.getDescription())
+            .price(createdProduct.getPrice())
+            .stock(createdProduct.getStock())
+            .categorie(ProductCategorieDTO.builder()
+                .id(createdProduct.getCategorie().getId())
+                .name(createdProduct.getCategorie().getName())
+                .build())
+            .assets(null)
+            .build();
     }
 
     @Override
-    public Product handleGetProductById(Long id) {
-        return this.productRepository.findById(id).orElseThrow(() -> 
+    public ProductResponseDTO handleGetProductById(Long id) {
+        Product currentProduct = this.productRepository.findById(id).orElseThrow(() -> 
         new NoSuchElementException("Product not found"));
+
+        return ProductResponseDTO.builder()
+            .id(currentProduct.getId())
+            .name(currentProduct.getName())
+            .description(currentProduct.getDescription())
+            .price(currentProduct.getPrice())
+            .stock(currentProduct.getStock())
+            .categorie(ProductCategorieDTO.builder()
+                .name(currentProduct.getCategorie().getName())
+                .id(currentProduct.getCategorie().getId())
+                .build())
+            .assets(currentProduct.getProductAssets() != null ? currentProduct.getProductAssets().stream().map(asset -> ProductAssestDTO.builder()
+                .id(asset.getId())
+                .assest_url(asset.getAssest_url())
+                .is_main(asset.getIs_main())
+                .build()).toList() : null)
+            .build();
     }
 
     @Override
-    public Product handleUpdateProduct(Long id, Product updateProduct) {
+    public ProductResponseDTO handleUpdateProduct(Long id, Product updateProduct) {
         Product currentProduct = this.productRepository.findById(id).orElseThrow(() -> 
         new NoSuchElementException("Product not found"));
 
@@ -83,7 +124,19 @@ public class ProductServiceImpl implements ProductService {
             currentProduct.setCategorie(updateProduct.getCategorie());
         }
 
-        return this.productRepository.save(currentProduct);
+        Product updatedProduct = this.productRepository.save(currentProduct);
+
+        return ProductResponseDTO.builder()
+            .id(updatedProduct.getId())
+            .name(updatedProduct.getName())
+            .description(updatedProduct.getDescription())
+            .price(updatedProduct.getPrice())
+            .stock(updatedProduct.getStock())
+            .categorie(ProductCategorieDTO.builder()
+                .name(updatedProduct.getCategorie().getName())
+                .id(updateProduct.getCategorie().getId())
+                .build())
+            .build();
     }
 
     @Override
@@ -111,10 +164,38 @@ public class ProductServiceImpl implements ProductService {
         this.productRepository.save(currentProduct);
     }
 
-    @Override
-    public Page<Product> handleGetAllProducts(Pageable productPageable) {
-        return this.productRepository.findAllByDeletedAtIsNull(productPageable);
+    @Cacheable(
+    value = "allProducts",
+    key = "#productPageable.pageNumber + '-' + #productPageable.pageSize + '-' + #productPageable.sort.toString()"
+    )
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    public PaginationResponseDTO<ProductResponseDTO, MetaDTO> handleGetAllProducts(Pageable productPageable) {
+
+        Page<Product> currentPage = productRepository.findAllByDeletedAtIsNull(productPageable);
+
+        List<ProductResponseDTO> list = currentPage.getContent()
+        .stream()
+        .map(product -> ProductResponseDTO.builder()
+            .id(product.getId())
+            .name(product.getName())
+            .description(product.getDescription())
+            .price(product.getPrice())
+            .build()
+        )
+        .toList();
+
+
+        return PaginationResponseDTO.<ProductResponseDTO, MetaDTO>builder()
+                .result(list)
+                .meta(MetaDTO.builder()
+                        .page(currentPage.getNumber())
+                        .pageSize(currentPage.getSize())
+                        .pages(currentPage.getTotalPages())
+                        .total(currentPage.getTotalElements())
+                        .build())
+                .build();
     }
+
 
     // @Override
     // public void handleDeleteProductCategorie(Categorie currentCategorie) {
@@ -122,7 +203,12 @@ public class ProductServiceImpl implements ProductService {
     // }
 
     @Override
-    public Page<Product> handleGetAllProductsByCategory(Long categorieId, Pageable productPageable) {
+    @Cacheable(
+        value = "allProductsByCategory",
+        key = "#categorieId + '-' + #productPageable.pageNumber + '-' + #productPageable.pageSize + '-' + #productPageable.sort.toString()"
+    )
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    public PaginationResponseDTO<ProductResponseDTO, MetaDTO> handleGetAllProductsByCategory(Long categorieId, Pageable productPageable) {
         if (categorieId == null) {
             throw new IllegalArgumentException("Categorie id is null");
         }
@@ -131,6 +217,38 @@ public class ProductServiceImpl implements ProductService {
             new NoSuchElementException("Categorie not found")
         );
 
-        return this.productRepository.findByCategorieAndDeletedAtIsNull(currentCategorie, productPageable);
+        Page<Product> currentPage = this.productRepository.findByCategorieAndDeletedAtIsNull(currentCategorie, productPageable);
+
+        List<ProductResponseDTO> listProductResponseDTO = currentPage.getContent()
+        .stream()
+        .map(product -> ProductResponseDTO.builder()
+            .id(product.getId())
+            .name(product.getName())
+            .description(product.getDescription())
+            .price(product.getPrice())
+            .stock(product.getStock())
+            .categorie(ProductCategorieDTO.builder()
+                .name(product.getCategorie().getName())
+                .id(product.getCategorie().getId())
+                .build())
+            .assets(product.getProductAssets() != null ? product.getProductAssets().stream().map(asset -> ProductAssestDTO.builder()
+                .id(asset.getId())
+                .assest_url(asset.getAssest_url())
+                .is_main(asset.getIs_main())
+                .build()).toList() : null)
+            .build()
+        )
+        .toList();
+
+
+        return PaginationResponseDTO.<ProductResponseDTO, MetaDTO>builder()
+                .result(listProductResponseDTO)
+                .meta(MetaDTO.builder()
+                        .page(currentPage.getNumber())
+                        .pageSize(currentPage.getSize())
+                        .pages(currentPage.getTotalPages())
+                        .total(currentPage.getTotalElements())
+                        .build())
+                .build();
     }
 }

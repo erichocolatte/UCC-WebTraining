@@ -33,19 +33,12 @@ public class CartController {
     public ResponseEntity<ApiResponseDTO<?>> getAllCartsByUserId(
         @PathVariable("userId") Long userId
     ) {
-        List<CartResponseDTO> listCartResponseDTO = this.cartService.handleGetAllCartsByUserId(userId).stream().map(cart -> CartResponseDTO.builder()
-            .id(cart.getId())
-            .status(cart.getStatus())
-            .user(CartUserDTO.builder()
-                .id(cart.getUser().getId())
-                .build())
-            .build()).toList();
         return ResponseEntity.ok(ApiResponseDTO.builder()
         .status(ApiResponseDTO.ResponseStatusDTO.builder()
             .statusCode(HttpStatus.OK)
             .message("Get all carts by user id successfully")
             .build())
-        .data(listCartResponseDTO)
+        .data(this.cartService.handleGetAllCartsByUserId(userId))
         .timeStamp(Instant.now())
         .build());
     }
@@ -54,20 +47,12 @@ public class CartController {
     public ResponseEntity<ApiResponseDTO<?>> getActiveCartByUserId(
         @PathVariable("userId") Long userId
     ) {
-        Cart activeCart = this.cartService.handleGetActiveCartByUserId(userId);
-        CartResponseDTO cartResponseDTO = CartResponseDTO.builder()
-            .id(activeCart.getId())
-            .status(activeCart.getStatus())
-            .user(CartUserDTO.builder()
-                .id(activeCart.getUser().getId())
-                .build())
-            .build();
         return ResponseEntity.ok(ApiResponseDTO.builder()
             .status(ApiResponseDTO.ResponseStatusDTO.builder()
                 .statusCode(HttpStatus.OK)
                 .message("Get active cart by user id successfully")
                 .build())
-            .data(cartResponseDTO)
+            .data(this.cartService.handleGetActiveCartByUserId(userId))
             .timeStamp(Instant.now())
             .build());
     }
@@ -76,19 +61,12 @@ public class CartController {
     public ResponseEntity<ApiResponseDTO<?>> createCart(
         @RequestBody Cart newCart
     ) {
-        Cart createdCart = this.cartService.handleCreateCart(newCart);
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponseDTO.builder()
         .status(ApiResponseDTO.ResponseStatusDTO.builder()
             .statusCode(HttpStatus.CREATED)
             .message("Create cart successfully")
             .build())
-        .data(CartResponseDTO.builder()
-            .id(createdCart.getId())
-            .status(createdCart.getStatus())
-            .user(CartUserDTO.builder()
-                .id(createdCart.getUser().getId())
-                .build())
-            .build())
+        .data(this.cartService.handleCreateCart(newCart))
         .timeStamp(Instant.now())
         .build());
     }
@@ -97,19 +75,12 @@ public class CartController {
     public ResponseEntity<ApiResponseDTO<?>> getCartById(
         @PathVariable Long id
     ) {
-        Cart currentCart = this.cartService.handleGetCartById(id);
         return ResponseEntity.ok(ApiResponseDTO.builder()
         .status(ApiResponseDTO.ResponseStatusDTO.builder()
             .statusCode(HttpStatus.OK)
             .message("Get cart successfully")
             .build())
-        .data(CartResponseDTO.builder()
-            .id(currentCart.getId())
-            .status(currentCart.getStatus())
-            .user(CartUserDTO.builder()
-                .id(currentCart.getUser().getId())
-                .build())
-            .build())
+        .data(this.cartService.handleGetCartById(id))
         .timeStamp(Instant.now())
         .build());
     }
@@ -119,19 +90,12 @@ public class CartController {
         @PathVariable Long id,
         @RequestBody Cart updateCart
     ) {
-        Cart updatedCart = this.cartService.handleUpdateCart(id, updateCart);
         return ResponseEntity.ok(ApiResponseDTO.builder()
         .status(ApiResponseDTO.ResponseStatusDTO.builder()
             .statusCode(HttpStatus.OK)
             .message("Update cart successfully")
             .build())
-        .data(CartResponseDTO.builder()
-            .id(updatedCart.getId())
-            .status(updatedCart.getStatus())
-            .user(CartUserDTO.builder()
-                .id(updatedCart.getUser().getId())
-                .build())
-            .build())
+        .data(this.cartService.handleUpdateCart(id, updateCart))
         .timeStamp(Instant.now())
         .build());
     }
