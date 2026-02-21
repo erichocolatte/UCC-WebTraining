@@ -127,8 +127,9 @@ public class SecurityConfiguration {
         configuration.setAllowedOrigins(Arrays.asList(
             "http://localhost:3000",
             "http://localhost:5500",
-            "http://127.0.0.1:5500"
-            // "http://localhost:8081"
+            "http://127.0.0.1:5500",
+            "http://52.77.223.254:80",
+            "http://52.77.223.254"
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
