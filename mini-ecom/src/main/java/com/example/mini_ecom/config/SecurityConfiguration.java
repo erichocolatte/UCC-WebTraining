@@ -93,6 +93,10 @@ public class SecurityConfiguration {
         "/api/v1/categories/**"
     };
 
+    String[] MONITORING_WHITELIST = {
+        "/actuator/**"
+    };
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity, CustomAuthenticationEntryPoint cPoint) throws Exception {
@@ -103,6 +107,7 @@ public class SecurityConfiguration {
             .requestMatchers(SWAGGER_WHITELIST).permitAll()
             .requestMatchers(AUTH_WHITELIST).permitAll()
             .requestMatchers(PUBLIC_WHITELIST).permitAll()
+            .requestMatchers(MONITORING_WHITELIST).permitAll()
             .requestMatchers("/error").permitAll()
             .anyRequest().authenticated()
         )

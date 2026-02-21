@@ -25,9 +25,22 @@ services:
       SPRING_DATASOURCE_DRIVER-CLASS-NAME: com.mysql.cj.jdbc.Driver
       SPRING_JPA_HIBERNATE_DDL-AUTO: update
       SPRING_JPA_SHOW-SQL: true
+      SPRING_CACHE_TYPE: redis
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+      
     volumes:
       - miniecom_data:/app
+
+  redis:
+    image: redis:7
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
 
 volumes:
   mysql_data:
   miniecom_data:
+  redis_data:
