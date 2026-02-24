@@ -1,5 +1,12 @@
-const API_BASE_URL = 'http://localhost:8080/api/v1';
+const isLocal =
+  window.location.hostname === '127.0.0.1' ||
+  window.location.hostname === 'localhost';
 
+const API_BASE_URL = isLocal
+  ? 'http://localhost:8080/api/v1'
+  : '/api/v1';
+
+// console.log(API_BASE_URL);
 // Auth Utilities
 const Auth = {
     saveToken: (token) => localStorage.setItem('accessToken', token),
