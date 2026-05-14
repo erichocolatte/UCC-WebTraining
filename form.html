@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML FORM</title>
+</head>
+
+<body>
+    <section class="form-demo">
+        <h2>Biểu mẫu đăng ký thành viên</h2>
+
+        <form action="/submit-form" method="POST">
+            <div class="form-group" style="background-color: red">
+                <label for="username" title="Nhap ten">Tên đăng nhập:</label><br>
+                <input type="text" id="username" name="username" placeholder="Nhập tên tài khoản..." required>
+                <label id="username">Username</label>
+            </div>
+            <div class="form-group">
+                <label for="user-email">Email liên hệ:</label><br>
+                <input type="email" id="user-email" name="user_email" placeholder="example@mail.com" required>
+            </div>
+            <div class="form-group">
+                <label for="pwd">Mật khẩu:</label><br>
+                <input type="password" id="pwd" name="password" placeholder="Ít nhất 8 ký tự" required>
+            </div>
+            <div class="form-group">
+                <label for="birthday">Ngày sinh:</label><br>
+                <input type="date" id="birthday" name="birthday">
+            </div>
+            <div class="form-group">
+                <p>Giới tính:</p>
+                <input type="radio" id="male" name="gender" value="male">
+                <label for="male">Nam</label>
+                <input type="radio" id="female" name="gender" value="female">
+                <label for="female">Nữ</label>
+            </div>
+            <div class="form-group">
+                <p>Kỹ năng:</p>
+                <input type="checkbox" id="skill1" name="skills" value="html">
+                <label for="skill1">HTML</label>
+                <input type="checkbox" id="skill2" name="skills" value="css">
+                <label for="skill2">CSS</label>
+                <input type="checkbox" id="skill3" name="skills" value="js">
+                <label for="skill3">JavaScript</label>
+            </div>
+            <div class="form-group">
+                <label for="city">Thành phố:</label>
+                <select id="city" name="city">
+                    <option value="hanoi">Hà Nội</option>
+                    <option value="hcm">TP. Hồ Chí Minh</option>
+                    <option value="danang">Đà Nẵng</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="bio">Giới thiệu bản thân:</label><br>
+                <textarea id="bio" name="bio" rows="4" cols="50" placeholder="Viết vài dòng về bạn..."></textarea>
+            </div>
+            <div class="form-actions">
+                <input type="submit" value="Đăng ký tài khoản" >
+                <input type="reset" value="Xóa dữ liệu">
+            </div>
+
+            <div onclick="saveData()">Luu data</div>
+
+            <!-- <img src="./assests/354912804_582013974090382_1597928518153411456_n.jpg" alt="Anh bi loi"/> -->
+        </form>
+
+        <script>
+            const username = document.querySelector("#username").value;
+            function saveData() {
+                localStorage.setItem("username", username)
+                console.log(username)
+            }
+        </script>
+    </section>
+</body>
+
+</html>
