@@ -8,15 +8,15 @@ services:
       - .env
     volumes:
       - mysql_data:/var/lib/mysql
-    restart: always
+    # restart: always
   
   miniecom:
     image: mini-ecom
     build: .
     container_name: miniecom
-    restart: always
-    expose:
-      - "8080"
+    # restart: always
+    ports:
+      - "8080:8080"
     depends_on:
       - mysql
       - redis
@@ -32,12 +32,12 @@ services:
     #   - "6379:6379"
     volumes:
       - redis_data:/data
-    restart: always
+    # restart: always
 
   nginx:
     image: nginx:latest
     container_name: nginx
-    restart: always
+    # restart: always
     ports:
       - "80:80"
     depends_on:
