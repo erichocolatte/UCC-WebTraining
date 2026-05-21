@@ -136,7 +136,6 @@ CREATE TABLE order_items (
 ---
 
 ### payments
-skip
 
 ```sql
 CREATE TABLE payments (

@@ -1,0 +1,117 @@
+* {
+  /* margin: 0;
+  padding: 0;
+  box-sizing: border-box; */
+  font-family: "Nunito Sans", sans-serif;
+  font-optical-sizing: auto;
+  /* font-weight: <weight>; */
+  font-style: normal;
+}
+
+.container {
+  /* background-color: black; */
+  background: hsla(210, 90%, 80%, 1);
+
+  background: linear-gradient(90deg, hsla(210, 90%, 80%, 1) 0%, hsla(212, 93%, 49%, 1) 100%);
+
+  background: -moz-linear-gradient(90deg, hsla(210, 90%, 80%, 1) 0%, hsla(212, 93%, 49%, 1) 100%);
+
+  background: -webkit-linear-gradient(90deg, hsla(210, 90%, 80%, 1) 0%, hsla(212, 93%, 49%, 1) 100%);
+
+  filter: progid: DXImageTransform.Microsoft.gradient(startColorstr="#9FCCFA", endColorstr="#0974F1", GradientType=1);
+  display: block;
+  align-items: center;
+  justify-content: center;
+  /* height: 200px; */
+  overflow: hidden;
+  /* overflow-x: scroll; */
+
+}
+
+.container-header {
+  display: block;
+  color: orange;
+}
+
+/* .container-header:hover .text {
+  display: none;
+} */
+
+.container h1 {
+  border-bottom: 2px solid black;
+  background-color: white;
+  padding: 10px;
+  margin: 30px;
+  border-radius: 10px;
+  background-image: url("https://cdn2.cellphones.com.vn/insecure/rs:fill:595:100/q:100/plain/https://media-asset.cellphones.com.vn/dashboard-v1/manage-banner/note-15-series-cate-0526.png");
+  
+}
+
+.container-header h1:hover {
+  padding: 20px;
+  transition: 1s ease-in;
+  opacity: 0.9;
+}
+
+.container-header h1::selection {
+  background-color: black;
+}
+
+.card-container {
+  background-color: blue;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card {
+  background-color: orange;
+  color: red;
+  /* align-items: center;
+  justify-items: center; */
+  /* padding: top right botton left */
+  padding: 12px;
+  border-radius: 10px;
+  width: 50%;
+  /* height: 100%; */
+}
+
+.card:hover {
+  background-color: black;
+  color: yellow;
+  transition: 2s ease-in;
+}
+
+
+
+.title {
+  /* display: flex;
+  align-items: center;
+  justify-content: center; */
+  color: white;
+}
+
+span {
+  text-align: center;
+}
+
+button {
+  background-color: black;
+  color: white;
+  padding-left: 20px;
+  padding-right: 20px;
+  margin-top: 20px;
+}
+
+img {
+  /* overflow: hidden; */
+  opacity: 0.1;
+}
+
+img:hover {
+  opacity: 1.0;
+}
+
+/* img::selection {
+  display: none;
+} */

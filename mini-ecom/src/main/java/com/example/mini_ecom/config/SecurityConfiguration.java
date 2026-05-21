@@ -103,7 +103,8 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity, CustomAuthenticationEntryPoint cPoint) throws Exception {
         httpSecurity
-        .cors(Customizer.withDefaults())
+        // .cors(Customizer.withDefaults())
+        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(auth -> auth
             .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
@@ -129,7 +130,7 @@ public class SecurityConfiguration {
         CorsConfiguration configuration = new CorsConfiguration();
 
         configuration.setAllowedOriginPatterns(List.of(
-            "http://52.77.223.254",
+            // "http://52.77.223.254",
             "http://localhost:*",
             "http://127.0.0.1:*"
         ));
